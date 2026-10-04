@@ -4,6 +4,15 @@ import entities.Administrator;
 import entities.Client;
 import entities.Employee;
 import entities.GymClass;
+
+/**
+ * Classe principal responsável por iniciar o sistema da academia e executar os testes automatizados.
+ * Serve como o ponto de entrada (entry point) do programa, validando a criação e a manipulação 
+ * das entidades principais como Clientes, Funcionários, Administradores e Aulas.
+ * 
+ * @author Samuel/Antony
+ * @version 1.0
+ */
 public class AcademiaPOO {
 
    
