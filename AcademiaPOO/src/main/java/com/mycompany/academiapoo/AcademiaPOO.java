@@ -1,4 +1,8 @@
-package academiapoo;
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ */
+
+package com.mycompany.academiapoo;
 
 import entities.Administrator;
 import entities.Client;
@@ -57,3 +61,4 @@ public class AcademiaPOO {
    } 
     
 }
+
