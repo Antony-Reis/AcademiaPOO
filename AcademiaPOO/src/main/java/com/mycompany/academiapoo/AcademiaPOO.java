@@ -5,10 +5,10 @@
 package com.mycompany.academiapoo;
 
 import com.mycompany.academiapoo.entities.GymRoom;
-import entities.Administrator;
-import entities.Client;
-import entities.Employee;
-import entities.GymClass;
+import com.mycompany.academiapoo.entities.Administrator;
+import com.mycompany.academiapoo.entities.Client;
+import com.mycompany.academiapoo.entities.Employee;
+import com.mycompany.academiapoo.entities.GymClass;
 
 /**
  * Classe principal responsável por iniciar o sistema da academia e executar os testes automatizados.

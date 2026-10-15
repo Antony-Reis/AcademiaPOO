@@ -1,32 +1,36 @@
-package entities;
+package com.mycompany.academiapoo.entities;
 
 import com.mycompany.academiapoo.entities.GymRoom;
 
 /**
- * Representa uma aula ou modalidade oferecida na academia (ex: Spinning, Musculação, Fit Dance, Pilates).
- * Esta classe armazena informações sobre o instrutor, a sala onde ocorre, o tipo de atividade e a capacidade de alunos.
+ * Representa uma aula ou modalidade oferecida na academia, como Spinning,
+ * Musculação, Fit Dance ou Pilates.
  * 
+ * Armazena o identificador da aula, o nome do instrutor responsável
+ * e a sala onde a atividade é realizada. O tipo da aula e a capacidade
+ * máxima de alunos são obtidos a partir dos dados da sala associada.
+ *
  * @author Antony/Samuel
- * @version 1.0
+ * @version 1.1
  */
 public class GymClass {
-    
-    /** O identificador único da aula. */
-    private int id;
-    
-    
-    /** O nome do instrutor responsável por acompanhar as atividades. */
-    private String instructor;
-    
-    private GymRoom room;
-    
-    /**
-     * Construtor completo para inicializar uma nova aula na academia.
-     *
-     * @param id O identificador único da aula.
-     * @param room A sala onde a aula será realizada.
-     * @param instructor O instrutor responsável.
 
+    /** Identificador único da aula. */
+    private int id;
+
+    /** Nome do instrutor responsável pela aula. */
+    private String instructor;
+
+    /** Sala onde a aula é realizada, contendo seu nome e sua capacidade. */
+    private GymRoom room;
+
+    /**
+     * Cria uma nova aula na academia, associando-a a uma sala
+     * e a um instrutor responsável.
+     *
+     * @param id identificador único da aula.
+     * @param instructor nome do instrutor responsável.
+     * @param room sala onde a aula será realizada.
      */
     public GymClass(int id, String instructor, GymRoom room) {
         this.id = id;
@@ -38,67 +42,70 @@ public class GymClass {
     /**
      * Retorna o identificador único da aula.
      *
-     * @return O id da aula.
+     * @return identificador da aula.
      */
     public int getId() {
         return id;
     }
 
     /**
-     * Retorna a sala onde a aula é realizada.
+     * Retorna o objeto que representa a sala associada à aula.
      *
-     * @return O nome ou identificação da sala.
+     * @return sala vinculada à aula.
      */
     public GymRoom getRoom() {
         return room;
     }
 
     /**
-     * Retorna o instrutor responsável pela aula.
+     * Retorna o nome do instrutor responsável pela aula.
      *
-     * @return O nome do instrutor.
+     * @return nome do instrutor.
      */
     public String getInstructor() {
         return instructor;
     }
 
     /**
-     * Retorna o tipo ou modalidade da aula.
+     * Retorna o tipo ou a modalidade da aula, utilizando o nome
+     * cadastrado na sala associada.
      *
-     * @return O tipo da aula.
+     * @return nome da modalidade definido na sala.
      */
     public String getType() {
         return room.getNome();
     }
 
     /**
-     * Retorna a capacidade máxima de alunos para esta aula.
+     * Retorna a capacidade máxima de alunos permitida na aula,
+     * conforme a capacidade cadastrada na sala associada.
      *
-     * @return A quantidade máxima de alunos permitida.
+     * @return quantidade máxima de alunos permitida na sala.
      */
     public int getCapacity() {
         return room.getCapacidade();
     }
 
     /**
-     * Altera o instrutor responsável por acompanhar as atividades da aula.
+     * Atualiza o nome do instrutor responsável pela aula.
      *
-     * @param instructor O nome do novo instrutor.
+     * @param instructor nome do novo instrutor.
      */
     public void setInstructor(String instructor) {
         this.instructor = instructor;
     }
 
     /**
-     * Retorna uma representação em formato de texto (String) com todos os dados da aula.
-     * Sobrescreve o método padrão da classe Object.
+     * Retorna uma representação textual dos dados da aula,
+     * incluindo seu identificador, a sala associada e o instrutor.
+     * Sobrescreve o método toString() da classe Object.
      *
-     * @return Uma String contendo o id, sala, instrutor, tipo e capacidade da aula.
+     * @return representação textual do identificador, da sala e do instrutor.
      */
     @Override
     public String toString() {
-        return "GymClass{" + "id: " + id + 
-                ", room: " + room + 
+        return "GymClass{" + "id: " + id +
+                ", room: " + room +
                 ", instructor: " + instructor;
     }
 }

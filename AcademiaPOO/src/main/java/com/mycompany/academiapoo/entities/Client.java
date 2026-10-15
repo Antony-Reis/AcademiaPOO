@@ -1,4 +1,4 @@
-package entities;
+package com.mycompany.academiapoo.entities;
 
 /**
  * Representa um cliente da academia em Milho Verde.

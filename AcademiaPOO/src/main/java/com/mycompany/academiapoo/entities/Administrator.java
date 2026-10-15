@@ -1,4 +1,4 @@
-package entities;
+package com.mycompany.academiapoo.entities;
 
 /**
  * Representa um Administrador do sistema da academia.

@@ -2,12 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package repository;
+package com.mycompany.academiapoo.repository;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
-import entities.Client;
+import com.mycompany.academiapoo.entities.Client;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
@@ -21,7 +21,7 @@ import java.util.List;
  * Realiza operações de leitura e escrita armazenando as informações localmente 
  * em formato JSON.
  * 
- * @author User
+ * @author Antony e Samuel
  * @version 1.0
  */
 public class ClientRepository {

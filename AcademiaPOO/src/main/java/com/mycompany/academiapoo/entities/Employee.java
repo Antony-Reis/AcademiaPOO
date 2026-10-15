@@ -1,4 +1,4 @@
-package entities;
+package com.mycompany.academiapoo.entities;
 
 /**
  * Representa um funcionário colaborador genérico do sistema da academia em Milho Verde.
