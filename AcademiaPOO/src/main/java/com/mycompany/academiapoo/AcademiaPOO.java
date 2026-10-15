@@ -4,6 +4,7 @@
 
 package com.mycompany.academiapoo;
 
+import com.mycompany.academiapoo.entities.GymRoom;
 import entities.Administrator;
 import entities.Client;
 import entities.Employee;
@@ -41,23 +42,20 @@ public class AcademiaPOO {
     System.out.println(adm1.authentication("4321"));
     System.out.println(adm1.canManegeExpense());
     
-    GymClass modality1 = new GymClass(6, "Sala 7", "Tommy","Spinning", 15);
+    GymClass modality1 = new GymClass(6,"Samuel",GymRoom.MUSCULACAO );
     System.out.println(modality1);
-    GymClass modality2 = new GymClass(7, "Sala 8", "Ana","Musculacao", 10);
+    GymClass modality2 = new GymClass(7,"Ana", GymRoom.SPINNING);
     System.out.println(modality2);
-    GymClass modality3 = new GymClass(8, "Sala 9", "Bob","Fit Dance", 12);
+    GymClass modality3 = new GymClass(8, "Bob", GymRoom.FIT_DANCE);
     System.out.println(modality3);
-    GymClass modality4 = new GymClass(9, "Sala 10", "Antony","Pilates", 5);
+    GymClass modality4 = new GymClass(9 , "Antony", GymRoom.PILATES);
     System.out.println(modality4);
     
     modality4.setInstructor("Ana");
-    modality4.setCapacity(14);
     modality2.setInstructor("Antony");
-    modality2.setCapacity(6);
-    System.out.print("Alteracoes " + modality4.getInstructor() + " ," + modality2.getInstructor() + " " +
-            " e " + modality2.getCapacity() + " ," + modality4.getCapacity() + " ");
+    System.out.print("Alteracoes " + modality4.getInstructor() + " ," + modality2.getInstructor());
     
-    
+   
    } 
     
 }

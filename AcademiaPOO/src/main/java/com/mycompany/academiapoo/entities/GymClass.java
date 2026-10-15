@@ -1,5 +1,7 @@
 package entities;
 
+import com.mycompany.academiapoo.entities.GymRoom;
+
 /**
  * Representa uma aula ou modalidade oferecida na academia (ex: Spinning, Musculação, Fit Dance, Pilates).
  * Esta classe armazena informações sobre o instrutor, a sala onde ocorre, o tipo de atividade e a capacidade de alunos.
@@ -12,17 +14,11 @@ public class GymClass {
     /** O identificador único da aula. */
     private int id;
     
-    /** O nome ou identificação da sala onde a aula será realizada. */
-    private String room;
     
     /** O nome do instrutor responsável por acompanhar as atividades. */
     private String instructor;
     
-    /** O tipo ou modalidade da aula (ex: Fit Dance, Pilates, etc.). */
-    private String type;
-    
-    /** A capacidade máxima de alunos permitida na aula. */
-    private int capacity;
+    private GymRoom room;
     
     /**
      * Construtor completo para inicializar uma nova aula na academia.
@@ -30,15 +26,13 @@ public class GymClass {
      * @param id O identificador único da aula.
      * @param room A sala onde a aula será realizada.
      * @param instructor O instrutor responsável.
-     * @param type O tipo/modalidade da aula.
-     * @param capacity A capacidade máxima de alunos.
+
      */
-    public GymClass(int id, String room, String instructor, String type, int capacity) {
+    public GymClass(int id, String instructor, GymRoom room) {
         this.id = id;
         this.room = room;
         this.instructor = instructor;
-        this.type = type;
-        this.capacity = capacity;
+        this.room = room;
     }
 
     /**
@@ -55,7 +49,7 @@ public class GymClass {
      *
      * @return O nome ou identificação da sala.
      */
-    public String getRoom() {
+    public GymRoom getRoom() {
         return room;
     }
 
@@ -74,7 +68,7 @@ public class GymClass {
      * @return O tipo da aula.
      */
     public String getType() {
-        return type;
+        return room.getNome();
     }
 
     /**
@@ -83,7 +77,7 @@ public class GymClass {
      * @return A quantidade máxima de alunos permitida.
      */
     public int getCapacity() {
-        return capacity;
+        return room.getCapacidade();
     }
 
     /**
@@ -96,20 +90,6 @@ public class GymClass {
     }
 
     /**
-     * Altera a capacidade máxima de alunos da aula. 
-     * A capacidade deve ser obrigatoriamente maior do que zero.
-     *
-     * @param capacity A nova capacidade máxima de alunos.
-     */
-    public void setCapacity(int capacity) {
-        if (capacity <= 0) {
-            System.out.println("Não pode existir capacidade menor ou igual a 0.");
-            return; // Impede que uma capacidade inválida seja atribuída
-        }        
-        this.capacity = capacity;
-    }
-
-    /**
      * Retorna uma representação em formato de texto (String) com todos os dados da aula.
      * Sobrescreve o método padrão da classe Object.
      *
@@ -119,8 +99,6 @@ public class GymClass {
     public String toString() {
         return "GymClass{" + "id: " + id + 
                 ", room: " + room + 
-                ", instructor: " + instructor + 
-                ", type: " + type + 
-                ", capacity: " + capacity + '}';
+                ", instructor: " + instructor;
     }
 }
