@@ -1,0 +1,126 @@
+[
+  {
+    "id": 4,
+    "cliente": {
+      "id": 2,
+      "name": "Maria",
+      "address": "Rua B",
+      "fone": "31999990000",
+      "email": "maria@gmail.com",
+      "cpf": "***.456.789-**",
+      "situation": true
+    },
+    "modalidade": {
+      "tipo": "Musculacao",
+      "nome": "Musculação",
+      "valorBase": 70.0,
+      "plano": {
+        "tipo": "PlanoAnual",
+        "descricao": "Anual"
+      }
+    },
+    "dataAgendamento": "2026-11-01",
+    "dataAula": "2026-11-10",
+    "instrutor": "Samuel",
+    "pagamento": {
+      "numeroCartao": "4444555566667777",
+      "valorPago": 59.5,
+      "valorDevolvido": 0.0,
+      "pago": true
+    },
+    "fase": "DEFINITIVO"
+  },
+  {
+    "id": 3,
+    "cliente": {
+      "id": 1,
+      "name": "Tom",
+      "address": "Rua A",
+      "fone": "3182659742",
+      "email": "samuel@gmail.com",
+      "cpf": "###.###.###-##",
+      "situation": false
+    },
+    "modalidade": {
+      "tipo": "FitDance",
+      "nome": "Fit Dance",
+      "valorBase": 60.0,
+      "plano": {
+        "tipo": "PlanoMensal",
+        "descricao": "Mensal"
+      }
+    },
+    "dataAgendamento": "2026-11-01",
+    "dataAula": "2026-11-10",
+    "instrutor": "Bob",
+    "pagamento": {
+      "numeroCartao": "5555444433332222",
+      "valorPago": 60.0,
+      "valorDevolvido": 0.0,
+      "pago": true
+    },
+    "fase": "CANCELADO"
+  },
+  {
+    "id": 1,
+    "cliente": {
+      "id": 1,
+      "name": "Tom",
+      "address": "Rua A",
+      "fone": "3182659742",
+      "email": "samuel@gmail.com",
+      "cpf": "###.###.###-##",
+      "situation": false
+    },
+    "modalidade": {
+      "tipo": "Spinning",
+      "nome": "Spinning",
+      "valorBase": 80.0,
+      "plano": {
+        "tipo": "PlanoDiaria",
+        "descricao": "Diária"
+      }
+    },
+    "dataAgendamento": "2026-11-01",
+    "dataAula": "2026-11-10",
+    "instrutor": "Ana",
+    "pagamento": {
+      "numeroCartao": "1234567890123456",
+      "valorPago": 80.0,
+      "valorDevolvido": 0.0,
+      "pago": false
+    },
+    "fase": "CANCELADO"
+  },
+  {
+    "id": 2,
+    "cliente": {
+      "id": 1,
+      "name": "Tom",
+      "address": "Rua A",
+      "fone": "3182659742",
+      "email": "samuel@gmail.com",
+      "cpf": "###.###.###-##",
+      "situation": false
+    },
+    "modalidade": {
+      "tipo": "Pilates",
+      "nome": "Pilates",
+      "valorBase": 100.0,
+      "plano": {
+        "tipo": "PlanoAnual",
+        "descricao": "Anual"
+      }
+    },
+    "dataAgendamento": "2026-11-01",
+    "dataAula": "2026-11-10",
+    "instrutor": "Antony",
+    "pagamento": {
+      "numeroCartao": "9876543210987654",
+      "valorPago": 85.0,
+      "valorDevolvido": 42.5,
+      "pago": true
+    },
+    "fase": "CANCELADO"
+  }
+]

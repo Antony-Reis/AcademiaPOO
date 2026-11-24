@@ -1,0 +1,250 @@
+[
+  {
+    "id": 101,
+    "cliente": {
+      "id": 1,
+      "name": "Gabriel Turista",
+      "address": "Pousada Sol",
+      "fone": "31900010001",
+      "email": "gabriel@tur.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "modalidade": {
+      "tipo": "Spinning",
+      "nome": "Spinning",
+      "valorBase": 80.0,
+      "plano": {
+        "tipo": "PlanoDiaria",
+        "descricao": "Diária"
+      }
+    },
+    "dataAgendamento": "2026-11-01",
+    "dataAula": "2026-11-10",
+    "instrutor": "Ana",
+    "pagamento": {
+      "numeroCartao": "4111111111111111",
+      "valorPago": 80.0,
+      "valorDevolvido": 0.0,
+      "pago": true
+    },
+    "fase": "DEFINITIVO"
+  },
+  {
+    "id": 102,
+    "cliente": {
+      "id": 2,
+      "name": "Juliana Mensal",
+      "address": "Rua Bela",
+      "fone": "31900010002",
+      "email": "juliana@email.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "modalidade": {
+      "tipo": "Musculacao",
+      "nome": "Musculação",
+      "valorBase": 70.0,
+      "plano": {
+        "tipo": "PlanoMensal",
+        "descricao": "Mensal"
+      }
+    },
+    "dataAgendamento": "2026-11-01",
+    "dataAula": "2026-11-10",
+    "instrutor": "Samuel",
+    "pagamento": {
+      "numeroCartao": "4222222222222222",
+      "valorPago": 70.0,
+      "valorDevolvido": 0.0,
+      "pago": true
+    },
+    "fase": "DEFINITIVO"
+  },
+  {
+    "id": 103,
+    "cliente": {
+      "id": 3,
+      "name": "Ricardo Anual",
+      "address": "Av. Brasil",
+      "fone": "31900010003",
+      "email": "ricardo@email.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "modalidade": {
+      "tipo": "Pilates",
+      "nome": "Pilates",
+      "valorBase": 100.0,
+      "plano": {
+        "tipo": "PlanoAnual",
+        "descricao": "Anual"
+      }
+    },
+    "dataAgendamento": "2026-11-01",
+    "dataAula": "2026-11-10",
+    "instrutor": "Antony",
+    "pagamento": {
+      "numeroCartao": "4333333333333333",
+      "valorPago": 85.0,
+      "valorDevolvido": 42.5,
+      "pago": true
+    },
+    "fase": "CANCELADO"
+  },
+  {
+    "id": 104,
+    "cliente": {
+      "id": 4,
+      "name": "Patrícia Atrasada",
+      "address": "Rua C",
+      "fone": "31900010004",
+      "email": "patricia@email.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "modalidade": {
+      "tipo": "FitDance",
+      "nome": "Fit Dance",
+      "valorBase": 60.0,
+      "plano": {
+        "tipo": "PlanoMensal",
+        "descricao": "Mensal"
+      }
+    },
+    "dataAgendamento": "2026-11-01",
+    "dataAula": "2026-11-10",
+    "instrutor": "Bob",
+    "pagamento": {
+      "numeroCartao": "4444444444444444",
+      "valorPago": 60.0,
+      "valorDevolvido": 0.0,
+      "pago": false
+    },
+    "fase": "CANCELADO"
+  },
+  {
+    "id": 105,
+    "cliente": {
+      "id": 5,
+      "name": "Eduardo Tarde",
+      "address": "Rua D",
+      "fone": "31900010005",
+      "email": "eduardo@email.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "modalidade": {
+      "tipo": "Spinning",
+      "nome": "Spinning",
+      "valorBase": 80.0,
+      "plano": {
+        "tipo": "PlanoAnual",
+        "descricao": "Anual"
+      }
+    },
+    "dataAgendamento": "2026-11-01",
+    "dataAula": "2026-11-10",
+    "instrutor": "Ana",
+    "pagamento": {
+      "numeroCartao": "4555555555555555",
+      "valorPago": 68.0,
+      "valorDevolvido": 0.0,
+      "pago": true
+    },
+    "fase": "CANCELADO"
+  },
+  {
+    "id": 108,
+    "cliente": {
+      "id": 8,
+      "name": "Camila Turista",
+      "address": "Hotel Serra",
+      "fone": "31900010008",
+      "email": "camila@tur.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "modalidade": {
+      "tipo": "Pilates",
+      "nome": "Pilates",
+      "valorBase": 100.0,
+      "plano": {
+        "tipo": "PlanoDiaria",
+        "descricao": "Diária"
+      }
+    },
+    "dataAgendamento": "2026-11-01",
+    "dataAula": "2026-11-10",
+    "instrutor": "Antony",
+    "pagamento": {
+      "numeroCartao": "4888888888888888",
+      "valorPago": 100.0,
+      "valorDevolvido": 0.0,
+      "pago": true
+    },
+    "fase": "DEFINITIVO"
+  },
+  {
+    "id": 109,
+    "cliente": {
+      "id": 9,
+      "name": "Rafael Encerrando",
+      "address": "Rua G",
+      "fone": "31900010009",
+      "email": "rafael@email.com",
+      "cpf": "***.111.111-**",
+      "situation": false
+    },
+    "modalidade": {
+      "tipo": "Musculacao",
+      "nome": "Musculação",
+      "valorBase": 70.0,
+      "plano": {
+        "tipo": "PlanoAnual",
+        "descricao": "Anual"
+      }
+    },
+    "dataAgendamento": "2026-11-01",
+    "dataAula": "2026-11-10",
+    "instrutor": "Samuel",
+    "pagamento": {
+      "numeroCartao": "4999999999999999",
+      "valorPago": 59.5,
+      "valorDevolvido": 0.0,
+      "pago": true
+    },
+    "fase": "DEFINITIVO"
+  },
+  {
+    "id": 110,
+    "cliente": {
+      "id": 10,
+      "name": "Larissa Vip",
+      "address": "Rua H",
+      "fone": "31900010010",
+      "email": "larissa@email.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "modalidade": {
+      "tipo": "FitDance",
+      "nome": "Fit Dance",
+      "valorBase": 60.0,
+      "plano": {
+        "tipo": "PlanoMensal",
+        "descricao": "Mensal"
+      }
+    },
+    "dataAgendamento": "2026-11-01",
+    "dataAula": "2026-11-10",
+    "instrutor": "Bob",
+    "pagamento": {
+      "numeroCartao": "4000000000000010",
+      "valorPago": 60.0,
+      "valorDevolvido": 0.0,
+      "pago": true
+    },
+    "fase": "DEFINITIVO"
+  }
+]

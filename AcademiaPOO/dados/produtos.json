@@ -1,0 +1,17 @@
+[
+  {
+    "id": 101,
+    "nome": "Whey Protein Concentrado 900g",
+    "preco": 149.9
+  },
+  {
+    "id": 102,
+    "nome": "Creatina Monohidratada 300g",
+    "preco": 89.9
+  },
+  {
+    "id": 104,
+    "nome": "Coqueteleira 700ml Academia",
+    "preco": 29.9
+  }
+]

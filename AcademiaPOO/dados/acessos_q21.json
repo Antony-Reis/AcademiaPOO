@@ -1,0 +1,132 @@
+[
+  {
+    "cliente": {
+      "id": 1,
+      "name": "Gabriel Turista",
+      "address": "Pousada Sol",
+      "fone": "31900010001",
+      "email": "gabriel@tur.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "tipoAcao": "ENTRADA",
+    "dataHora": "2026-11-23T23:19:59.8556452"
+  },
+  {
+    "cliente": {
+      "id": 1,
+      "name": "Gabriel Turista",
+      "address": "Pousada Sol",
+      "fone": "31900010001",
+      "email": "gabriel@tur.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "tipoAcao": "SAIDA",
+    "dataHora": "2026-11-23T23:19:59.8562981"
+  },
+  {
+    "cliente": {
+      "id": 2,
+      "name": "Juliana Mensal",
+      "address": "Rua Bela",
+      "fone": "31900010002",
+      "email": "juliana@email.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "tipoAcao": "ENTRADA",
+    "dataHora": "2026-11-23T23:19:59.8562981"
+  },
+  {
+    "cliente": {
+      "id": 2,
+      "name": "Juliana Mensal",
+      "address": "Rua Bela",
+      "fone": "31900010002",
+      "email": "juliana@email.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "tipoAcao": "SAIDA",
+    "dataHora": "2026-11-23T23:19:59.8562981"
+  },
+  {
+    "cliente": {
+      "id": 8,
+      "name": "Camila Turista",
+      "address": "Hotel Serra",
+      "fone": "31900010008",
+      "email": "camila@tur.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "tipoAcao": "ENTRADA",
+    "dataHora": "2026-11-23T23:19:59.8592046"
+  },
+  {
+    "cliente": {
+      "id": 8,
+      "name": "Camila Turista",
+      "address": "Hotel Serra",
+      "fone": "31900010008",
+      "email": "camila@tur.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "tipoAcao": "SAIDA",
+    "dataHora": "2026-11-23T23:19:59.8592046"
+  },
+  {
+    "cliente": {
+      "id": 9,
+      "name": "Rafael Encerrando",
+      "address": "Rua G",
+      "fone": "31900010009",
+      "email": "rafael@email.com",
+      "cpf": "***.111.111-**",
+      "situation": false
+    },
+    "tipoAcao": "ENTRADA",
+    "dataHora": "2026-11-23T23:19:59.8624206"
+  },
+  {
+    "cliente": {
+      "id": 9,
+      "name": "Rafael Encerrando",
+      "address": "Rua G",
+      "fone": "31900010009",
+      "email": "rafael@email.com",
+      "cpf": "***.111.111-**",
+      "situation": false
+    },
+    "tipoAcao": "SAIDA",
+    "dataHora": "2026-11-23T23:19:59.8624206"
+  },
+  {
+    "cliente": {
+      "id": 10,
+      "name": "Larissa Vip",
+      "address": "Rua H",
+      "fone": "31900010010",
+      "email": "larissa@email.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "tipoAcao": "ENTRADA",
+    "dataHora": "2026-11-23T23:19:59.8634302"
+  },
+  {
+    "cliente": {
+      "id": 10,
+      "name": "Larissa Vip",
+      "address": "Rua H",
+      "fone": "31900010010",
+      "email": "larissa@email.com",
+      "cpf": "***.111.111-**",
+      "situation": true
+    },
+    "tipoAcao": "SAIDA",
+    "dataHora": "2026-11-23T23:19:59.8634302"
+  }
+]

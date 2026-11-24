@@ -1,0 +1,92 @@
+[
+  {
+    "id": 1,
+    "name": "Gabriel Turista",
+    "address": "Pousada Sol",
+    "fone": "31900010001",
+    "email": "gabriel@tur.com",
+    "cpf": "***.111.111-**",
+    "situation": true
+  },
+  {
+    "id": 2,
+    "name": "Juliana Mensal",
+    "address": "Rua Bela",
+    "fone": "31900010002",
+    "email": "juliana@email.com",
+    "cpf": "***.111.111-**",
+    "situation": true
+  },
+  {
+    "id": 3,
+    "name": "Ricardo Anual",
+    "address": "Av. Brasil",
+    "fone": "31900010003",
+    "email": "ricardo@email.com",
+    "cpf": "***.111.111-**",
+    "situation": true
+  },
+  {
+    "id": 4,
+    "name": "Patrícia Atrasada",
+    "address": "Rua C",
+    "fone": "31900010004",
+    "email": "patricia@email.com",
+    "cpf": "***.111.111-**",
+    "situation": true
+  },
+  {
+    "id": 5,
+    "name": "Eduardo Tarde",
+    "address": "Rua D",
+    "fone": "31900010005",
+    "email": "eduardo@email.com",
+    "cpf": "***.111.111-**",
+    "situation": true
+  },
+  {
+    "id": 6,
+    "name": "Sandra Inativa",
+    "address": "Rua E",
+    "fone": "31900010006",
+    "email": "sandra@email.com",
+    "cpf": "***.111.111-**",
+    "situation": false
+  },
+  {
+    "id": 7,
+    "name": "Marcos Pendente",
+    "address": "Rua F",
+    "fone": "31900010007",
+    "email": "marcos@email.com",
+    "cpf": "***.111.111-**",
+    "situation": true
+  },
+  {
+    "id": 8,
+    "name": "Camila Turista",
+    "address": "Hotel Serra",
+    "fone": "31900010008",
+    "email": "camila@tur.com",
+    "cpf": "***.111.111-**",
+    "situation": true
+  },
+  {
+    "id": 9,
+    "name": "Rafael Encerrando",
+    "address": "Rua G",
+    "fone": "31900010009",
+    "email": "rafael@email.com",
+    "cpf": "***.111.111-**",
+    "situation": false
+  },
+  {
+    "id": 10,
+    "name": "Larissa Vip",
+    "address": "Rua H",
+    "fone": "31900010010",
+    "email": "larissa@email.com",
+    "cpf": "***.111.111-**",
+    "situation": true
+  }
+]

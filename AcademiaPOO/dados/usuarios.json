@@ -1,0 +1,14 @@
+[
+  {
+    "tipo": "Colaborador",
+    "nome": "Carlos Silva",
+    "login": "carlos.recepcao",
+    "senha": "senha123"
+  },
+  {
+    "tipo": "Administrador",
+    "nome": "Ana Souza",
+    "login": "ana.admin",
+    "senha": "admin456"
+  }
+]

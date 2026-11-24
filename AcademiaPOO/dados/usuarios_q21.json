@@ -1,0 +1,14 @@
+[
+  {
+    "tipo": "Colaborador",
+    "nome": "Carlos Recepção",
+    "login": "carlos.op",
+    "senha": "op123"
+  },
+  {
+    "tipo": "Administrador",
+    "nome": "Ana Diretora",
+    "login": "ana.dir",
+    "senha": "dir999"
+  }
+]

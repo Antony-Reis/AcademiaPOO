@@ -1,0 +1,28 @@
+[
+  {
+    "cliente": {
+      "id": 2,
+      "name": "Maria",
+      "address": "Rua B",
+      "fone": "31999990000",
+      "email": "maria@gmail.com",
+      "cpf": "***.456.789-**",
+      "situation": true
+    },
+    "tipoAcao": "ENTRADA",
+    "dataHora": "2026-11-23T23:00:09.4565637"
+  },
+  {
+    "cliente": {
+      "id": 2,
+      "name": "Maria",
+      "address": "Rua B",
+      "fone": "31999990000",
+      "email": "maria@gmail.com",
+      "cpf": "***.456.789-**",
+      "situation": true
+    },
+    "tipoAcao": "SAIDA",
+    "dataHora": "2026-11-23T23:00:09.4565637"
+  }
+]
