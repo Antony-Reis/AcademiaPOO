@@ -1,63 +1,47 @@
 package br.com.academiapoo.model;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 
 /**
- * Representa um Agendamento de aula em uma academia.
- * Esta classe integra o {@link Client}, a {@link Modalidade} (já vinculada a um {@link Plano}
- * pelo padrão Bridge), datas, instrutor e o {@link Pagamento} no cartão de crédito.
- *
- * Controla a máquina de estados entre Preliminar, Definitivo e Cancelado, aplicando as regras
- * de confirmação com até 5 dias de antecedência e retenção de 50% em caso de desistência
- * com até 3 dias antes da aula.
- *
- * @author Antony/Samuel
- * @version 2.0
+ * Agendamento de aula com controle de fase (preliminar, definitivo, cancelado) e pagamento.
  */
 public class Agendamento {
 
-    /** Formatador padrão para exibição das datas no padrão brasileiro. */
     private static final DateTimeFormatter FORMATADOR_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    /** O identificador único do agendamento no sistema. */
+    /** Codigo do agendamento. */
+    // nao tem setter pra nao mudar o id depois que o agendamento foi criado
     private Integer id;
 
-    /** O cliente titular do agendamento. */
+    /** Cliente dono do agendamento. */
     private Client cliente;
 
-    /** A modalidade da aula já vinculada ao respectivo plano (Padrão Bridge). */
+    /** Modalidade e plano escolhidos (Bridge). */
     private Modalidade modalidade;
 
-    /** A data de criação do agendamento. */
+    /** Data em que o agendamento foi aberto. */
+    // nao tem setter porque a data de criacao nao muda
     private LocalDate dataAgendamento;
 
-    /** A data em que a aula será realizada. */
+    /** Data da aula marcada. */
     private LocalDate dataAula;
 
-    /** O nome do instrutor responsável pela aula. */
+    /** Nome do instrutor da aula. */
     private String instrutor;
 
-    /** Registro financeiro responsável pela cobrança e eventual reembolso. */
+    /** Dados de pagamento no cartao. */
+    // nao tem setter porque o pagamento e criado junto com o agendamento
     private Pagamento pagamento;
 
-    /** A fase atual do agendamento (Preliminar, Definitivo ou Cancelado). */
+    /** Fase atual do agendamento. */
+    // nao tem setter porque a fase so muda pelos metodos de confirmacao ou cancelamento
     private FaseAgendamento fase;
 
-    /**
-     * Construtor completo para inicializar um novo agendamento.
-     * Utiliza {@code super()} para inicializar a classe base. O agendamento sempre inicia na fase Preliminar.
-     *
-     * @param id O identificador único do agendamento.
-     * @param cliente O cliente que está realizando o agendamento.
-     * @param modalidade A modalidade escolhida (já associada ao seu Plano).
-     * @param dataAgendamento A data em que o agendamento foi feito.
-     * @param dataAula A data da realização da aula.
-     * @param instrutor O nome do instrutor.
-     * @param numeroCartao O número do cartão para faturamento.
-     */
+    /** Construtor completo do agendamento (inicia como preliminar). */
     public Agendamento(Integer id, Client cliente, Modalidade modalidade, LocalDate dataAgendamento,
                        LocalDate dataAula, String instrutor, String numeroCartao) {
         super();
@@ -77,28 +61,30 @@ public class Agendamento {
         this.fase = FaseAgendamento.PRELIMINAR;
     }
 
-    /**
-     * Construtor de conveniência que assume a data atual como data do agendamento.
-     *
-     * @param id O identificador único do agendamento.
-     * @param cliente O cliente que está realizando o agendamento.
-     * @param modalidade A modalidade escolhida (já associada ao seu Plano).
-     * @param dataAula A data da realização da aula.
-     * @param instrutor O nome do instrutor.
-     * @param numeroCartao O número do cartão para faturamento.
-     */
+    /** Construtor usando a data de hoje como data do agendamento. */
     public Agendamento(Integer id, Client cliente, Modalidade modalidade, LocalDate dataAula,
                        String instrutor, String numeroCartao) {
         this(id, cliente, modalidade, LocalDate.now(), dataAula, instrutor, numeroCartao);
     }
 
-    /**
-     * Confirma o agendamento e realiza a cobrança no cartão.
-     * Se o cliente não confirmar até 5 dias antes da data da aula, o agendamento é cancelado.
-     *
-     * @param dataConfirmacao A data em que a confirmação está sendo feita.
-     * @return {@code true} se foi confirmado dentro do prazo, {@code false} se foi cancelado por expiração.
-     */
+    // conta quantos dias uteis tem entre uma data e outra (pulando sabado e domingo)
+    private long contarDiasUteis(LocalDate inicio, LocalDate fim) {
+        if (inicio == null || fim == null || !inicio.isBefore(fim)) {
+            return 0;
+        }
+        long diasUteis = 0;
+        LocalDate atual = inicio;
+        while (atual.isBefore(fim)) {
+            atual = atual.plusDays(1);
+            DayOfWeek diaSemana = atual.getDayOfWeek();
+            if (diaSemana != DayOfWeek.SATURDAY && diaSemana != DayOfWeek.SUNDAY) {
+                diasUteis++;
+            }
+        }
+        return diasUteis;
+    }
+
+    /** Confirma o agendamento se faltar pelo menos 5 dias uteis pra aula; senao cancela. */
     public boolean confirmarAgendamento(LocalDate dataConfirmacao) {
         if (dataConfirmacao == null) {
             throw new IllegalArgumentException("A data de confirmação não pode ser nula.");
@@ -110,40 +96,28 @@ public class Agendamento {
             throw new IllegalStateException("O agendamento já se encontra na fase Definitiva.");
         }
 
-        long diasAteAula = ChronoUnit.DAYS.between(dataConfirmacao, this.dataAula);
+        long diasUteis = contarDiasUteis(dataConfirmacao, this.dataAula);
 
-        if (diasAteAula < 5) {
+        if (diasUteis < 5) {
             this.fase = FaseAgendamento.CANCELADO;
-            System.out.printf("[Regra de Negócio] Agendamento #%d cancelado: prazo de confirmação expirado (faltam %d dias para a aula; exigido: mínimo de 5 dias).%n",
-                    this.id, diasAteAula);
+            System.out.printf("[Regra de Negócio] Agendamento #%d cancelado: prazo de confirmação expirado (faltam %d dias úteis para a aula; exigido: mínimo de 5 dias úteis).%n",
+                    this.id, diasUteis);
             return false;
         }
 
         this.fase = FaseAgendamento.DEFINITIVO;
         this.pagamento.processarPagamento();
-        System.out.printf("[Regra de Negócio] Agendamento #%d confirmado como definitivo com %d dias de antecedência.%n",
-                this.id, diasAteAula);
+        System.out.printf("[Regra de Negócio] Agendamento #%d confirmado como definitivo com %d dias úteis de antecedência.%n",
+                this.id, diasUteis);
         return true;
     }
 
-    /**
-     * Confirma o agendamento utilizando a data atual do sistema.
-     *
-     * @return {@code true} se confirmado com sucesso, {@code false} se cancelado por expiração.
-     */
+    /** Confirma o agendamento usando a data atual. */
     public boolean confirmarAgendamento() {
         return confirmarAgendamento(LocalDate.now());
     }
 
-    /**
-     * Cancela o agendamento por desistência do cliente e calcula o reembolso.
-     * Se o agendamento estiver confirmado (com cartão debitado) e o cliente desistir com
-     * até 3 dias antes da data (3 dias ou mais de antecedência), devolve 50% do valor retendo 50%.
-     * Caso a desistência ocorra com menos de 3 dias de antecedência, não há devolução (retenção de 100%).
-     *
-     * @param dataDesistencia A data em que o cliente solicitou a desistência.
-     * @return O valor em reais devolvido ao cliente.
-     */
+    /** Cancela o agendamento e devolve 50% se faltar 3 dias ou mais; senao retem 100%. */
     public double cancelarComReembolso(LocalDate dataDesistencia) {
         if (dataDesistencia == null) {
             throw new IllegalArgumentException("A data de desistência não pode ser nula.");
@@ -175,25 +149,16 @@ public class Agendamento {
         }
     }
 
-    /**
-     * Cancela o agendamento com reembolso utilizando a data atual do sistema.
-     *
-     * @return O valor devolvido ao cliente.
-     */
+    /** Cancela o agendamento com reembolso usando a data atual. */
     public double cancelarComReembolso() {
         return cancelarComReembolso(LocalDate.now());
     }
 
-    /**
-     * Verifica e cancela preventivamente um agendamento preliminar que ultrapassou o limite de 5 dias.
-     *
-     * @param dataReferencia A data base para a verificação.
-     * @return {@code true} se foi cancelado por prazo expirado, {@code false} caso contrário.
-     */
+    /** Cancela agendamento preliminar se ja passou do limite de 5 dias uteis. */
     public boolean verificarExpiracaoPrazo(LocalDate dataReferencia) {
         if (this.fase == FaseAgendamento.PRELIMINAR) {
-            long diasAteAula = ChronoUnit.DAYS.between(dataReferencia, this.dataAula);
-            if (diasAteAula < 5) {
+            long diasUteis = contarDiasUteis(dataReferencia, this.dataAula);
+            if (diasUteis < 5) {
                 this.fase = FaseAgendamento.CANCELADO;
                 return true;
             }
@@ -201,48 +166,28 @@ public class Agendamento {
         return false;
     }
 
-    /**
-     * Retorna o identificador do agendamento.
-     *
-     * @return O id do agendamento.
-     */
+    /** Retorna o id do agendamento. */
     public Integer getId() {
         return this.id;
     }
 
-    /**
-     * Retorna o cliente vinculado ao agendamento.
-     *
-     * @return O cliente.
-     */
+    /** Retorna o cliente do agendamento. */
     public Client getCliente() {
         return this.cliente;
     }
 
-    /**
-     * Atualiza o cliente vinculado ao agendamento.
-     *
-     * @param cliente O novo cliente.
-     */
+    /** Atualiza o cliente do agendamento. */
     public void setCliente(Client cliente) {
         validarCliente(cliente);
         this.cliente = cliente;
     }
 
-    /**
-     * Retorna a modalidade da aula.
-     *
-     * @return A modalidade da aula.
-     */
+    /** Retorna a modalidade da aula. */
     public Modalidade getModalidade() {
         return this.modalidade;
     }
 
-    /**
-     * Atualiza a modalidade da aula e recalcula o valor a pagar caso o agendamento esteja preliminar.
-     *
-     * @param modalidade A nova modalidade.
-     */
+    /** Atualiza a modalidade e recalcula o valor se ainda for preliminar. */
     public void setModalidade(Modalidade modalidade) {
         validarModalidade(modalidade);
         this.modalidade = modalidade;
@@ -251,112 +196,64 @@ public class Agendamento {
         }
     }
 
-    /**
-     * Retorna a data de criação do agendamento.
-     *
-     * @return A data do agendamento.
-     */
+    /** Retorna a data de criacao do agendamento. */
     public LocalDate getDataAgendamento() {
         return this.dataAgendamento;
     }
 
-    /**
-     * Retorna a data da realização da aula.
-     *
-     * @return A data da aula.
-     */
+    /** Retorna a data da aula. */
     public LocalDate getDataAula() {
         return this.dataAula;
     }
 
-    /**
-     * Atualiza a data da realização da aula.
-     *
-     * @param dataAula A nova data da aula.
-     */
+    /** Atualiza a data da aula. */
     public void setDataAula(LocalDate dataAula) {
         validarDatas(this.dataAgendamento, dataAula);
         this.dataAula = dataAula;
     }
 
-    /**
-     * Retorna o nome do instrutor da aula.
-     *
-     * @return O nome do instrutor.
-     */
+    /** Retorna o nome do instrutor. */
     public String getInstrutor() {
         return this.instrutor;
     }
 
-    /**
-     * Atualiza o nome do instrutor da aula.
-     *
-     * @param instrutor O novo nome do instrutor.
-     */
+    /** Atualiza o nome do instrutor. */
     public void setInstrutor(String instrutor) {
         validarInstrutor(instrutor);
         this.instrutor = instrutor.trim();
     }
 
-    /**
-     * Retorna o objeto de pagamento associado ao agendamento.
-     *
-     * @return O pagamento do agendamento.
-     */
+    /** Retorna o objeto Pagamento do agendamento. */
     public Pagamento getPagamento() {
         return this.pagamento;
     }
 
-    /**
-     * Retorna o preço calculado da aula.
-     *
-     * @return O valor da aula.
-     */
+    /** Retorna o valor da aula. */
     public double getPreco() {
         return this.pagamento.getValorPago();
     }
 
-    /**
-     * Retorna o número do cartão cadastrado.
-     *
-     * @return O número do cartão.
-     */
+    /** Retorna o numero do cartao. */
     public String getNumeroCartao() {
         return this.pagamento.getNumeroCartao();
     }
 
-    /**
-     * Retorna o número do cartão ofuscado para preservar os dados do cliente.
-     *
-     * @return O número do cartão mascarado.
-     */
+    /** Retorna o numero do cartao mascarado. */
     public String getNumeroCartaoMascarado() {
         return this.pagamento.getNumeroCartaoMascarado();
     }
 
-    /**
-     * Atualiza o número do cartão com validação.
-     *
-     * @param numeroCartao O novo número do cartão.
-     */
+    /** Atualiza o numero do cartao. */
     public void setNumeroCartao(String numeroCartao) {
         this.pagamento.setNumeroCartao(numeroCartao);
     }
 
-    /**
-     * Retorna a fase atual do agendamento.
-     *
-     * @return A fase do agendamento.
-     */
+    /** Retorna a fase atual do agendamento. */
     public FaseAgendamento getFase() {
         return this.fase;
     }
 
-    /**
-     * Retorna o valor reembolsado em caso de desistência.
-     *
-     * @return O valor do reembolso.
-     */
+    /** Retorna o valor reembolsado. */
     public double getValorReembolsado() {
         return this.pagamento.getValorDevolvido();
     }
@@ -394,12 +291,6 @@ public class Agendamento {
         }
     }
 
-    /**
-     * Compara dois agendamentos pelo identificador id.
-     *
-     * @param obj O objeto a ser comparado.
-     * @return {@code true} se tiverem o mesmo id, {@code false} caso contrário.
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -412,21 +303,11 @@ public class Agendamento {
         return Objects.equals(this.id, other.id);
     }
 
-    /**
-     * Retorna o código hash baseado no identificador do agendamento.
-     *
-     * @return O valor hash do id.
-     */
     @Override
     public int hashCode() {
         return Objects.hash(this.id);
     }
 
-    /**
-     * Retorna uma representação em formato de texto com os dados do agendamento.
-     *
-     * @return Uma String contendo os detalhes do agendamento.
-     */
     @Override
     public String toString() {
         return String.format(

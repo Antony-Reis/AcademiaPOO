@@ -4,18 +4,13 @@ import br.com.academiapoo.model.*;
 
 import java.util.Comparator;
 
+// ideia baseada no exemplo de comparator visto em aula
 /**
- * Implementação de {@link Comparator} para ordenação de objetos {@link Agendamento}
- * por diferentes critérios (data da aula, data do agendamento, valor, nome do cliente ou fase).
- *
- * @author Samuel/Antony
- * @version 1.0
+ * Comparator para ordenar agendamentos por data, valor, cliente ou fase.
  */
 public class AgendamentoComparator implements Comparator<Agendamento> {
 
-    /**
-     * Critérios disponíveis para comparação de agendamentos.
-     */
+    /** Criterios disponiveis para comparar agendamentos. */
     public enum Criterio {
         DATA_AULA,
         DATA_AGENDAMENTO,
@@ -24,21 +19,15 @@ public class AgendamentoComparator implements Comparator<Agendamento> {
         FASE
     }
 
-    /** Critério de ordenação selecionado. */
+    /** Criterio selecionado. */
     private Criterio criterio;
 
-    /**
-     * Construtor padrão que ordena agendamentos pela data da aula.
-     */
+    /** Construtor padrao ordenando pela data da aula. */
     public AgendamentoComparator() {
         this(Criterio.DATA_AULA);
     }
 
-    /**
-     * Construtor que define o critério de ordenação desejado.
-     *
-     * @param criterio O critério de comparação.
-     */
+    /** Construtor definindo o criterio de comparacao. */
     public AgendamentoComparator(Criterio criterio) {
         super();
         if (criterio == null) {
@@ -47,20 +36,12 @@ public class AgendamentoComparator implements Comparator<Agendamento> {
         this.criterio = criterio;
     }
 
-    /**
-     * Retorna o critério atual de ordenação.
-     *
-     * @return O critério configurado.
-     */
+    /** Retorna o criterio atual. */
     public Criterio getCriterio() {
         return this.criterio;
     }
 
-    /**
-     * Altera o critério de ordenação.
-     *
-     * @param criterio O novo critério.
-     */
+    /** Altera o criterio de comparacao. */
     public void setCriterio(Criterio criterio) {
         if (criterio == null) {
             throw new IllegalArgumentException("O critério de comparação não pode ser nulo.");
@@ -68,13 +49,6 @@ public class AgendamentoComparator implements Comparator<Agendamento> {
         this.criterio = criterio;
     }
 
-    /**
-     * Compara dois agendamentos de acordo com o critério configurado.
-     *
-     * @param a1 Primeiro agendamento.
-     * @param a2 Segundo agendamento.
-     * @return Valor negativo, zero ou positivo conforme a ordem.
-     */
     @Override
     public int compare(Agendamento a1, Agendamento a2) {
         if (a1 == a2) {
@@ -87,27 +61,34 @@ public class AgendamentoComparator implements Comparator<Agendamento> {
             return 1;
         }
 
+        int res = 0;
         switch (this.criterio) {
             case DATA_AGENDAMENTO:
-                return a1.getDataAgendamento().compareTo(a2.getDataAgendamento());
+                res = a1.getDataAgendamento().compareTo(a2.getDataAgendamento());
+                break;
             case VALOR:
-                return Double.compare(a1.getPreco(), a2.getPreco());
+                res = Double.compare(a1.getPreco(), a2.getPreco());
+                break;
             case CLIENTE_NOME:
-                return a1.getCliente().getName().compareToIgnoreCase(a2.getCliente().getName());
+                res = a1.getCliente().getName().compareToIgnoreCase(a2.getCliente().getName());
+                break;
             case FASE:
-                return a1.getFase().name().compareTo(a2.getFase().name());
+                res = a1.getFase().name().compareTo(a2.getFase().name());
+                break;
             case DATA_AULA:
             default:
                 int cmpData = a1.getDataAula().compareTo(a2.getDataAula());
-                return (cmpData != 0) ? cmpData : Integer.compare(a1.getId(), a2.getId());
+                if (cmpData != 0) {
+                    res = cmpData;
+                } else {
+                    res = Integer.compare(a1.getId(), a2.getId());
+                }
+                break;
         }
+        // System.out.println("debug: cmp agendamento = " + res);
+        return res;
     }
 
-    /**
-     * Retorna uma representação textual do comparador de agendamentos.
-     *
-     * @return String indicando o critério atual.
-     */
     @Override
     public String toString() {
         return "AgendamentoComparator [Critério: " + this.criterio.name() + "]";

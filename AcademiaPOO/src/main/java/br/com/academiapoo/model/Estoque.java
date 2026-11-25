@@ -2,36 +2,26 @@ package br.com.academiapoo.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 /**
- * Representa o Estoque da lojinha da academia.
- * Esta classe gerencia a lista de produtos disponíveis, controlando
- * operações de cadastro, remoção e verificação de itens em estoque.
- * 
- * @author Antony/Samuel
- * @version 1.0
+ * Gerencia os produtos em estoque da lojinha da academia.
  */
 public class Estoque {
 
-    /** A lista de produtos armazenados no estoque da academia. */
+    /** Lista interna de produtos em estoque. */
+    // nao tem setProdutos pra ninguem trocar a lista inteira por fora
     private final List<Produto> produtos;
 
-    /**
-     * Construtor padrão para inicializar um estoque vazio.
-     * Utiliza super() para inicializar a classe base.
-     */
+    /** Construtor padrao com estoque vazio. */
     public Estoque() {
         super();
         this.produtos = new ArrayList<>();
     }
 
-    /**
-     * Construtor com lista inicial de produtos.
-     *
-     * @param produtosIniciais Lista inicial de produtos para o estoque.
-     */
+    /** Construtor recebendo uma lista inicial de produtos. */
     public Estoque(List<Produto> produtosIniciais) {
         super();
         this.produtos = new ArrayList<>();
@@ -44,30 +34,19 @@ public class Estoque {
         }
     }
 
-    /**
-     * Adiciona um novo produto ao estoque.
-     * Não permite adicionar produtos nulos nem produtos com id repetido.
-     *
-     * @param produto O produto a ser adicionado.
-     * @return true se o produto foi adicionado, false caso contrário.
-     */
+    /** Adiciona um produto ao estoque se o ID ainda nao existir. */
     public boolean adicionarProduto(Produto produto) {
         if (produto == null) {
             throw new IllegalArgumentException("Não é possível adicionar um produto nulo ao estoque.");
         }
-        if (verificarProdutoPorId(produto.getId())) {
+        if (verficarProdutoPorId(produto.getId())) {
             System.err.println("Aviso: O produto com ID " + produto.getId() + " já está cadastrado.");
             return false;
         }
         return this.produtos.add(produto);
     }
 
-    /**
-     * Remove um produto do estoque.
-     *
-     * @param produto O produto a ser removido.
-     * @return true se foi removido, false caso não tenha sido encontrado.
-     */
+    /** Remove um produto do estoque. */
     public boolean removerProduto(Produto produto) {
         if (produto == null) {
             return false;
@@ -75,25 +54,23 @@ public class Estoque {
         return this.produtos.remove(produto);
     }
 
-    /**
-     * Remove um produto do estoque pelo seu identificador id.
-     *
-     * @param id O identificador do produto a ser removido.
-     * @return true se foi removido, false caso não tenha sido encontrado.
-     */
+    /** Remove um produto pelo id usando Iterator. */
     public boolean removerProdutoPorId(Integer id) {
         if (id == null) {
             return false;
         }
-        return this.produtos.removeIf(produto -> produto.getId().equals(id));
+        Iterator<Produto> it = this.produtos.iterator();
+        while (it.hasNext()) {
+            Produto p = it.next();
+            if (p.getId().equals(id)) {
+                it.remove();
+                return true;
+            }
+        }
+        return false;
     }
 
-    /**
-     * Verifica se um produto está cadastrado no estoque.
-     *
-     * @param produto O produto a ser verificado.
-     * @return true se o produto estiver no estoque, false caso contrário.
-     */
+    /** Verifica se o produto esta no estoque. */
     public boolean verificarProduto(Produto produto) {
         if (produto == null) {
             return false;
@@ -101,76 +78,52 @@ public class Estoque {
         return this.produtos.contains(produto);
     }
 
-    /**
-     * Verifica se existe um produto no estoque com o id informado.
-     *
-     * @param id O id a ser verificado.
-     * @return true se o produto estiver no estoque, false caso contrário.
-     */
-    public boolean verificarProdutoPorId(Integer id) {
+    /** Verifica se existe um produto com o id informado. */
+    public boolean verficarProdutoPorId(Integer id) {
         if (id == null) {
             return false;
         }
-        return this.produtos.stream().anyMatch(p -> p.getId().equals(id));
+        for (int i = 0; i < this.produtos.size(); i++) {
+            Produto p = this.produtos.get(i);
+            if (p.getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
     }
 
-    /**
-     * Realiza a busca de um produto pelo id.
-     *
-     * @param id O id do produto procurado.
-     * @return Optional contendo o produto se for encontrado.
-     */
+    /** Busca um produto pelo id no estoque. */
     public Optional<Produto> buscarProdutoPorId(Integer id) {
         if (id == null) {
             return Optional.empty();
         }
-        return this.produtos.stream()
-                .filter(p -> p.getId().equals(id))
-                .findFirst();
+        for (Produto p : this.produtos) {
+            if (p.getId().equals(id)) {
+                return Optional.of(p);
+            }
+        }
+        return Optional.empty();
     }
 
-    /**
-     * Retorna a quantidade total de produtos cadastrados no estoque.
-     *
-     * @return A quantidade de itens.
-     */
+    /** Retorna a quantidade total de itens no estoque. */
     public int getQuantidadeTotal() {
         return this.produtos.size();
     }
 
-    /**
-     * Calcula o valor total somado de todos os produtos do estoque.
-     *
-     * @return A soma dos preços dos produtos.
-     */
+    /** Soma o valor de todos os produtos em estoque. */
     public double calcularValorTotalEstoque() {
-        return this.produtos.stream()
-                .mapToDouble(Produto::getPreco)
-                .sum();
+        double soma = 0.0;
+        for (int i = 0; i < this.produtos.size(); i++) {
+            soma += this.produtos.get(i).getPreco();
+        }
+        return soma;
     }
 
-    /**
-     * Retorna a lista de produtos em estoque como uma lista somente leitura.
-     *
-     * @return A lista de produtos não modificável.
-     */
+    /** Retorna a lista de produtos (somente leitura). */
     public List<Produto> getProdutos() {
         return Collections.unmodifiableList(this.produtos);
     }
 
-    /*
-     * Justificativa da ausência do método setProdutos:
-     * Não fornecemos um setter para a lista completa para proteger o estoque.
-     * Qualquer inclusão ou remoção de produtos deve ser feita exclusivamente
-     * pelos métodos adicionarProduto e removerProduto, garantindo que as regras
-     * e validações sejam sempre respeitadas.
-     */
-
-    /**
-     * Retorna uma representação em formato de texto com os dados do estoque.
-     *
-     * @return Uma String contendo o resumo e a lista de produtos em estoque.
-     */
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

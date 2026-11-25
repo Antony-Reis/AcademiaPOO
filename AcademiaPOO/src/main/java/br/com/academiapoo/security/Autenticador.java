@@ -3,19 +3,10 @@ package br.com.academiapoo.security;
 import br.com.academiapoo.model.Usuario;
 
 /**
- * Interface componente (Component) do padrão Decorator para autenticação de usuários.
- *
- * @author Samuel/Antony
- * @version 1.0
+ * Interface base do padrao Decorator para autenticacao de usuarios.
  */
 public interface Autenticador {
 
-    /**
-     * Realiza a autenticação a partir de login e senha.
-     *
-     * @param login O login informado.
-     * @param senha A senha informada.
-     * @return O {@link Usuario} autenticado, ou {@code null} se as credenciais forem inválidas ou bloqueadas.
-     */
+    /** Valida login e senha e devolve o usuario ou null se falhar. */
     Usuario autenticar(String login, String senha);
 }

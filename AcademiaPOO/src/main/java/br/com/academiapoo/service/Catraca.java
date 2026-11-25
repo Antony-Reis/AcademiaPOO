@@ -2,112 +2,204 @@ package br.com.academiapoo.service;
 
 import br.com.academiapoo.model.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+// catraca usando chain of responsibility (baseado no exemplo de validadores)
 /**
- * Controla a catraca eletrônica da academia utilizando o padrão Chain of Responsibility.
- * Executa a cadeia de validadores configurada e, em caso de aprovação,
- * grava cronologicamente os registros de entrada e saída em {@link RegistroAcesso}.
- *
- * @author Samuel/Antony
- * @version 1.0
+ * Controla a catraca da academia, valida a cadeia de acesso e registra entradas e saidas.
  */
 public class Catraca {
 
-    /** Primeiro elo da cadeia de validação de acesso. */
+    private static final DateTimeFormatter FMT_DATA_HORA = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+    private static final DateTimeFormatter FMT_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+    /** Primeiro validador da cadeia. */
     private ValidadorAcesso cadeiaValidacao;
 
-    /** Histórico cronológico de entradas e saídas liberadas. */
-    private List<RegistroAcesso> historicoAcessos;
+    /** Historico cronologico de entradas e saidas. */
+    // nao tem setter pro historico nao ser apagado ou trocado manualmente
+    private List<RegistoAcesso> historicoAcessos;
 
-    /**
-     * Construtor da catraca recebendo o início da cadeia de validação.
-     *
-     * @param cadeiaValidacao O primeiro validador da cadeia.
-     */
+    /** Construtor da catraca com o inicio da cadeia de validacao. */
     public Catraca(ValidadorAcesso cadeiaValidacao) {
         super();
         this.cadeiaValidacao = cadeiaValidacao;
         this.historicoAcessos = new ArrayList<>();
     }
 
-    /**
-     * Valida o acesso do cliente pela cadeia de validadores e, se aprovado,
-     * registra a entrada com data e hora atuais.
-     *
-     * @param cliente O cliente que deseja entrar na academia.
-     * @return {@code true} se a entrada foi liberada e registrada; {@code false} caso contrário.
-     */
+    /** Valida o cliente na cadeia e registra a entrada se passar. */
     public boolean registrarEntrada(Client cliente) {
-        boolean aprovado = (this.cadeiaValidacao == null) || this.cadeiaValidacao.validar(cliente);
-        if (!aprovado) {
+        boolean achouBloqueio = false;
+        if (this.cadeiaValidacao != null) {
+            boolean temp = this.cadeiaValidacao.validar(cliente);
+            if (!temp) {
+                achouBloqueio = true;
+            }
+        }
+        if (achouBloqueio) {
             return false;
         }
 
-        RegistroAcesso registro = new RegistroAcesso(cliente, RegistroAcesso.TipoAcao.ENTRADA, LocalDateTime.now());
-        this.historicoAcessos.add(registro);
+        RegistoAcesso reg = new RegistoAcesso(cliente, RegistoAcesso.TipoAcao.ENTRADA, LocalDateTime.now());
+        this.historicoAcessos.add(reg);
+        // System.out.println("debug: catraca liberou " + cliente.getName());
         System.out.printf("[Catraca] Entrada liberada para %s.%n", cliente.getName());
         return true;
     }
 
-    /**
-     * Registra a saída do cliente pela catraca com data e hora atuais.
-     *
-     * @param cliente O cliente que está saindo da academia.
-     * @return {@code true} se a saída foi registrada com sucesso.
-     */
+    /** Registra a saida do cliente na catraca. */
     public boolean registrarSaida(Client cliente) {
         if (cliente == null) {
             System.out.println("[Catraca] Saída não registrada: cliente não informado.");
             return false;
         }
 
-        RegistroAcesso registro = new RegistroAcesso(cliente, RegistroAcesso.TipoAcao.SAIDA, LocalDateTime.now());
-        this.historicoAcessos.add(registro);
+        RegistoAcesso aux = new RegistoAcesso(cliente, RegistoAcesso.TipoAcao.SAIDA, LocalDateTime.now());
+        this.historicoAcessos.add(aux);
         System.out.printf("[Catraca] Saída registrada para %s.%n", cliente.getName());
         return true;
     }
 
-    /**
-     * Retorna a cadeia de validadores configurada na catraca.
-     *
-     * @return O primeiro validador da cadeia.
-     */
+    /** Lista os clientes que entraram e ainda nao registraram saida. */
+    public List<Client> listarPessoasPresentes() {
+        List<Client> presentes = new ArrayList<>();
+        for (int i = 0; i < this.historicoAcessos.size(); i++) {
+            RegistoAcesso reg = this.historicoAcessos.get(i);
+            Client c = reg.getCliente();
+            if (reg.getTipoAcao() == RegistoAcesso.TipoAcao.ENTRADA) {
+                if (!jaEstaNaLista(presentes, c.getId())) {
+                    presentes.add(c);
+                }
+            } else if (reg.getTipoAcao() == RegistoAcesso.TipoAcao.SAIDA) {
+                removerDaListaPorId(presentes, c.getId());
+            }
+        }
+        return presentes;
+    }
+
+    private boolean jaEstaNaLista(List<Client> lista, Integer id) {
+        for (int i = 0; i < lista.size(); i++) {
+            if (lista.get(i).getId().equals(id)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void removerDaListaPorId(List<Client> lista, Integer id) {
+        for (int i = 0; i < lista.size(); i++) {
+            if (lista.get(i).getId().equals(id)) {
+                lista.remove(i);
+                return;
+            }
+        }
+    }
+
+    /** Conta quantas pessoas estao dentro da academia no momento. */
+    public int contarPessoasPresentes() {
+        return listarPessoasPresentes().size();
+    }
+
+    /** Gera o relatorio diario de entradas e saidas da catraca. */
+    public String gerarRelatorioDiario(LocalDate dia) {
+        if (dia == null) {
+            throw new IllegalArgumentException("A data é obrigatória.");
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== RELATÓRIO CATRACA DIÁRIO (").append(dia.format(FMT_DATA)).append(") ===\n");
+        int total = 0;
+        for (int i = 0; i < this.historicoAcessos.size(); i++) {
+            RegistoAcesso reg = this.historicoAcessos.get(i);
+            if (reg.getDataHora().toLocalDate().equals(dia)) {
+                sb.append(" - ").append(reg.getCliente().getName())
+                  .append(" | ").append(reg.getTipoAcao().name())
+                  .append(" | ").append(reg.getDataHora().format(FMT_DATA_HORA)).append("\n");
+                total++;
+            }
+        }
+        sb.append("Total de marcações no dia: ").append(total);
+        return sb.toString();
+    }
+
+    /** Gera o relatorio mensal de entradas e saidas da catraca. */
+    public String gerarRelatorioMensal(YearMonth mes) {
+        if (mes == null) {
+            throw new IllegalArgumentException("O mês é obrigatório.");
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("=== RELATÓRIO CATRACA MENSAL (%02d/%d) ===%n", mes.getMonthValue(), mes.getYear()));
+        int entradas = 0;
+        int saidas = 0;
+        for (int i = 0; i < this.historicoAcessos.size(); i++) {
+            RegistoAcesso reg = this.historicoAcessos.get(i);
+            if (YearMonth.from(reg.getDataHora()).equals(mes)) {
+                sb.append(" - ").append(reg.getCliente().getName())
+                  .append(" | ").append(reg.getTipoAcao().name())
+                  .append(" | ").append(reg.getDataHora().format(FMT_DATA_HORA)).append("\n");
+                if (reg.getTipoAcao() == RegistoAcesso.TipoAcao.ENTRADA) {
+                    entradas++;
+                } else {
+                    saidas++;
+                }
+            }
+        }
+        sb.append("Entradas: ").append(entradas).append(" | Saídas: ").append(saidas);
+        return sb.toString();
+    }
+
+    /** Gera o relatorio anual de entradas e saidas da catraca. */
+    public String gerarRelatorioAnual(int ano) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== RELATÓRIO CATRACA ANUAL (").append(ano).append(") ===\n");
+        int entradas = 0;
+        int saidas = 0;
+        for (int i = 0; i < this.historicoAcessos.size(); i++) {
+            RegistoAcesso reg = this.historicoAcessos.get(i);
+            if (reg.getDataHora().getYear() == ano) {
+                if (reg.getTipoAcao() == RegistoAcesso.TipoAcao.ENTRADA) {
+                    entradas++;
+                } else {
+                    saidas++;
+                }
+            }
+        }
+        sb.append("Total de entradas no ano: ").append(entradas)
+          .append(" | Total de saídas no ano: ").append(saidas);
+        return sb.toString();
+    }
+
+    /** Retorna o primeiro validador da cadeia. */
     public ValidadorAcesso getCadeiaValidacao() {
         return this.cadeiaValidacao;
     }
 
-    /**
-     * Atualiza a cadeia de validadores da catraca.
-     *
-     * @param cadeiaValidacao O novo primeiro elo da cadeia.
-     */
+    /** Altera a cadeia de validacao da catraca. */
     public void setCadeiaValidacao(ValidadorAcesso cadeiaValidacao) {
         this.cadeiaValidacao = cadeiaValidacao;
     }
 
-    /**
-     * Retorna o histórico imutável de registros de acesso.
-     *
-     * @return Lista cronológica de {@link RegistroAcesso}.
-     */
-    public List<RegistroAcesso> getHistoricoAcessos() {
+    /** Retorna o historico de acessos (somente leitura). */
+    public List<RegistoAcesso> getHistoricoAcessos() {
         return Collections.unmodifiableList(this.historicoAcessos);
     }
 
-    /**
-     * Retorna uma representação textual do estado atual da catraca e seu histórico.
-     *
-     * @return String descrevendo a cadeia e o total de registros.
-     */
     @Override
     public String toString() {
+        String nomeCadeia;
+        if (this.cadeiaValidacao != null) {
+            nomeCadeia = this.cadeiaValidacao.toString();
+        } else {
+            nomeCadeia = "Nenhuma";
+        }
         return String.format(
                 "Catraca [Cadeia: %s | Total de Registros: %d]",
-                (this.cadeiaValidacao != null ? this.cadeiaValidacao.toString() : "Nenhuma"),
+                nomeCadeia,
                 this.historicoAcessos.size()
         );
     }

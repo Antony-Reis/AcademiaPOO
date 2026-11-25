@@ -1,49 +1,31 @@
 package br.com.academiapoo.model;
 
 /**
- * Representa as fases de um agendamento na academia:
- * Preliminar, Definitivo e Cancelado.
- * 
- * @author Antony/Samuel
- * @version 1.0
+ * Fases possiveis de um agendamento na academia.
  */
 public enum FaseAgendamento {
 
-    /** Fase inicial onde a vaga está pré-reservada aguardando confirmação. */
+    /** Pre-reserva aguardando confirmacao. */
     PRELIMINAR("Preliminar"),
 
-    /** Fase onde o agendamento foi confirmado e o valor foi debitado no cartão. */
+    /** Agendamento confirmado e pago. */
     DEFINITIVO("Definitivo"),
 
-    /** Fase onde o agendamento foi cancelado por falta de confirmação ou por desistência. */
+    /** Agendamento cancelado por expiracao ou desistencia. */
     CANCELADO("Cancelado");
 
-    /** Descrição em formato legível da fase. */
+    /** Descricao da fase. */
     private final String descricao;
 
-    /**
-     * Construtor do enum para definir a descrição da fase.
-     *
-     * @param descricao A descrição da fase.
-     */
     FaseAgendamento(String descricao) {
         this.descricao = descricao;
     }
 
-    /**
-     * Retorna a descrição da fase.
-     *
-     * @return A descrição da fase.
-     */
+    /** Retorna a descricao da fase. */
     public String getDescricao() {
         return this.descricao;
     }
 
-    /**
-     * Retorna a descrição textual da fase.
-     *
-     * @return A descrição da fase.
-     */
     @Override
     public String toString() {
         return this.descricao;

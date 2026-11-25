@@ -1,28 +1,13 @@
 package br.com.academiapoo.model;
 
 /**
- * Interface que define o contrato de implementação (Implementor) do padrão Bridge
- * para os planos de cobrança da academia.
- *
- * Permite desacoplar a regra de cálculo de preço da hierarquia de modalidades.
- *
- * @author Samuel/Antony
- * @version 1.0
+ * Interface dos planos de cobranca (Implementor do padrao Bridge).
  */
 public interface Plano {
 
-    /**
-     * Calcula o valor final da aula a partir do valor base da modalidade.
-     *
-     * @param valorBase O valor base da modalidade.
-     * @return O valor final calculado de acordo com o plano.
-     */
+    /** Calcula o valor final da aula usando o valor base. */
     double calcularValor(double valorBase);
 
-    /**
-     * Retorna o nome identificador do tipo de plano.
-     *
-     * @return O tipo do plano (ex: Diária, Mensal, Anual).
-     */
+    /** Retorna o nome do tipo de plano. */
     String getTipoPlano();
 }

@@ -7,61 +7,42 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Elo concreto do padrão Chain of Responsibility que verifica se o cliente
- * possui diária ou mensalidade paga e sem pendências financeiras.
- *
- * @author Samuel/Antony
- * @version 1.0
+ * Valida na catraca se o cliente tem agendamento definitivo e pago.
  */
 public class ValidadorFinanceiro extends ValidadorAcesso {
 
-    /** Lista de agendamentos utilizados para verificar pagamentos confirmados. */
+    /** Lista de agendamentos usados na checagem. */
+    // nao tem setter porque novos agendamentos entram via adicionarAgendamento
     private List<Agendamento> agendamentos;
 
-    /**
-     * Construtor padrão sem agendamentos pré-carregados.
-     */
+    /** Construtor padrao. */
     public ValidadorFinanceiro() {
         super();
         this.agendamentos = new ArrayList<>();
     }
 
-    /**
-     * Construtor que recebe a lista de agendamentos para verificação financeira.
-     *
-     * @param agendamentos Lista de agendamentos registrados no sistema.
-     */
+    /** Construtor recebendo uma lista de agendamentos. */
     public ValidadorFinanceiro(List<Agendamento> agendamentos) {
         super();
-        this.agendamentos = (agendamentos != null) ? new ArrayList<>(agendamentos) : new ArrayList<>();
+        if (agendamentos != null) {
+            this.agendamentos = new ArrayList<>(agendamentos);
+        } else {
+            this.agendamentos = new ArrayList<>();
+        }
     }
 
-    /**
-     * Adiciona um agendamento à base de verificação financeira.
-     *
-     * @param agendamento O agendamento a ser considerado.
-     */
+    /** Adiciona um agendamento na lista do validador. */
     public void adicionarAgendamento(Agendamento agendamento) {
         if (agendamento != null) {
             this.agendamentos.add(agendamento);
         }
     }
 
-    /**
-     * Retorna a lista imutável de agendamentos monitorados.
-     *
-     * @return Lista de agendamentos.
-     */
+    /** Retorna a lista de agendamentos (somente leitura). */
     public List<Agendamento> getAgendamentos() {
         return Collections.unmodifiableList(this.agendamentos);
     }
 
-    /**
-     * Verifica se o cliente possui ao menos um agendamento definitivo com pagamento efetivado.
-     *
-     * @param cliente O cliente que solicita acesso.
-     * @return {@code true} se estiver em dia e os próximos elos aprovarem.
-     */
     @Override
     public boolean validar(Client cliente) {
         if (cliente == null) {
@@ -69,17 +50,20 @@ public class ValidadorFinanceiro extends ValidadorAcesso {
             return false;
         }
 
-        boolean possuiPagamentoConfirmado = false;
-        for (Agendamento ag : this.agendamentos) {
-            if (ag.getCliente().getId().equals(cliente.getId())
-                    && ag.getFase() == FaseAgendamento.DEFINITIVO
-                    && ag.getPagamento().isPago()) {
-                possuiPagamentoConfirmado = true;
+        boolean achou = false;
+        // percorre a lsita de agendamentos
+        for (int i = 0; i < this.agendamentos.size(); i++) {
+            Agendamento temp = this.agendamentos.get(i);
+            if (temp.getCliente().getId().equals(cliente.getId())
+                    && temp.getFase() == FaseAgendamento.DEFINITIVO
+                    && temp.getPagamento().isPago()) {
+                achou = true;
                 break;
             }
         }
+        // System.out.println("debug: validador financeiro achou=" + achou);
 
-        if (!possuiPagamentoConfirmado) {
+        if (!achou) {
             System.out.printf("[Catraca - Financeiro] Acesso negado para %s: sem diária/plano pago e confirmado.%n",
                     cliente.getName());
             return false;
@@ -88,11 +72,6 @@ public class ValidadorFinanceiro extends ValidadorAcesso {
         return validarProximo(cliente);
     }
 
-    /**
-     * Retorna uma representação textual do validador financeiro.
-     *
-     * @return String descrevendo o validador e a quantidade de agendamentos monitorados.
-     */
     @Override
     public String toString() {
         return String.format("ValidadorFinanceiro [Agendamentos monitorados: %d] -> %s",

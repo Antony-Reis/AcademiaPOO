@@ -1,33 +1,21 @@
 package br.com.academiapoo.model;
 
+// ponte pro Plano (padrao Bridge)
 /**
- * Classe abstrata que representa a Abstração (Abstraction) do padrão Bridge
- * para as modalidades de aula da academia.
- *
- * Mantém uma referência protegida para um objeto {@link Plano} via composição
- * e delega a ele o cálculo do valor final da aula.
- *
- * @author Samuel/Antony
- * @version 1.0
+ * Classe abstrata das modalidades de aula ligadas a um Plano (padrao Bridge).
  */
 public abstract class Modalidade {
 
-    /** Plano de cobrança associado à modalidade (ponte/Bridge). */
+    /** Plano de cobranca associado. */
     protected Plano plano;
 
-    /** Nome identificador da modalidade. */
+    /** Nome da modalidade. */
     private String nome;
 
-    /** Valor base da aula antes da aplicação das regras do plano. */
+    /** Valor base da aula. */
     private double valorBase;
 
-    /**
-     * Construtor da modalidade recebendo nome, valor base e o plano vinculado.
-     *
-     * @param nome O nome da modalidade.
-     * @param valorBase O valor base da modalidade.
-     * @param plano O plano de cobrança aplicado.
-     */
+    /** Construtor da modalidade com nome, valor base e plano. */
     public Modalidade(String nome, double valorBase, Plano plano) {
         super();
         validarNome(nome);
@@ -39,67 +27,39 @@ public abstract class Modalidade {
         this.plano = plano;
     }
 
-    /**
-     * Delega ao {@link Plano} o cálculo do valor final da modalidade.
-     *
-     * @return O valor final calculado pelo plano.
-     */
+    /** Calcula o valor final delegando para o plano. */
     public double calcularValorFinal() {
         return this.plano.calcularValor(this.valorBase);
     }
 
-    /**
-     * Retorna o nome da modalidade.
-     *
-     * @return O nome da modalidade.
-     */
+    /** Retorna o nome da modalidade. */
     public String getNome() {
         return this.nome;
     }
 
-    /**
-     * Atualiza o nome da modalidade.
-     *
-     * @param nome O novo nome da modalidade.
-     */
+    /** Atualiza o nome da modalidade. */
     public void setNome(String nome) {
         validarNome(nome);
         this.nome = nome.trim();
     }
 
-    /**
-     * Retorna o valor base da modalidade.
-     *
-     * @return O valor base.
-     */
+    /** Retorna o valor base. */
     public double getValorBase() {
         return this.valorBase;
     }
 
-    /**
-     * Atualiza o valor base da modalidade.
-     *
-     * @param valorBase O novo valor base.
-     */
+    /** Atualiza o valor base. */
     public void setValorBase(double valorBase) {
         validarValorBase(valorBase);
         this.valorBase = valorBase;
     }
 
-    /**
-     * Retorna o plano vinculado à modalidade.
-     *
-     * @return O objeto {@link Plano}.
-     */
+    /** Retorna o plano vinculado. */
     public Plano getPlano() {
         return this.plano;
     }
 
-    /**
-     * Altera o plano vinculado à modalidade.
-     *
-     * @param plano O novo plano de cobrança.
-     */
+    /** Troca o plano vinculado. */
     public void setPlano(Plano plano) {
         validarPlano(plano);
         this.plano = plano;
@@ -123,11 +83,6 @@ public abstract class Modalidade {
         }
     }
 
-    /**
-     * Retorna uma representação textual da modalidade, incluindo seu plano e valor final.
-     *
-     * @return String com os dados da modalidade.
-     */
     @Override
     public String toString() {
         return String.format(

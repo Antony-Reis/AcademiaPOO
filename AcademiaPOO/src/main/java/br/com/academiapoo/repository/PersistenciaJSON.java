@@ -26,7 +26,7 @@ import br.com.academiapoo.model.PlanoAnual;
 import br.com.academiapoo.model.PlanoDiaria;
 import br.com.academiapoo.model.PlanoMensal;
 import br.com.academiapoo.model.Produto;
-import br.com.academiapoo.model.RegistroAcesso;
+import br.com.academiapoo.model.RegistoAcesso;
 import br.com.academiapoo.model.Spinning;
 import br.com.academiapoo.model.Usuario;
 import java.io.BufferedReader;
@@ -44,178 +44,188 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
+// fazendo a percistencia dos dados em json
 /**
- * Classe utilitária responsável pela persistência de dados da academia em arquivos JSON
- * utilizando a biblioteca Gson.
- *
- * Gerencia leitura e escrita segura com {@code try-with-resources} em UTF-8 para
- * Clientes, Agendamentos (com Modalidade e Plano), Registros de Acesso da Catraca,
- * Produtos, Relatórios de Vendas (Extrato), Usuários (Colaboradores/Administradores)
- * e Estoque.
- *
- * @author Samuel/Antony
- * @version 1.0
+ * Classe utilitaria para salvar e carregar os dados do sistema em arquivos JSON usando Gson.
  */
 public class PersistenciaJSON {
 
-    /** Instância configurada do Gson com adaptadores para datas e hierarquias polimórficas. */
+    /** Instancia do Gson com adaptadores de data e heranca. */
     private static final Gson GSON = criarGson();
 
-    /**
-     * Construtor padrão da classe utilitária.
-     */
+    /** Construtor padrao. */
     public PersistenciaJSON() {
         super();
     }
 
-    /**
-     * Configura o {@link Gson} com Pretty Printing e adaptadores para {@link LocalDate},
-     * {@link LocalDateTime}, {@link YearMonth}, {@link Plano}, {@link Modalidade} e {@link Usuario}.
-     */
+    // adaptado pra funcionar com o gson (datas do java 8 e classes abstratas davam erro sem isso)
     private static Gson criarGson() {
-        return new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeAdapter(LocalDate.class, new LocalDateAdapter())
-                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
-                .registerTypeAdapter(YearMonth.class, new YearMonthAdapter())
-                .registerTypeHierarchyAdapter(Plano.class, new PlanoAdapter())
-                .registerTypeHierarchyAdapter(Modalidade.class, new ModalidadeAdapter())
-                .registerTypeHierarchyAdapter(Usuario.class, new UsuarioAdapter())
-                .create();
+        GsonBuilder builder = new GsonBuilder();
+        builder.setPrettyPrinting();
+        builder.registerTypeAdapter(LocalDate.class, new LocalDateAdapter());
+        builder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
+        builder.registerTypeAdapter(YearMonth.class, new YearMonthAdapter());
+        builder.registerTypeHierarchyAdapter(Plano.class, new PlanoAdapter());
+        builder.registerTypeHierarchyAdapter(Modalidade.class, new ModalidadeAdapter());
+        builder.registerTypeHierarchyAdapter(Usuario.class, new UsuarioAdapter());
+        return builder.create();
     }
 
-    /**
-     * Salva qualquer objeto ou coleção em um arquivo JSON utilizando {@code try-with-resources}.
-     *
-     * @param caminhoArquivo Caminho do arquivo de destino.
-     * @param dados Objeto ou lista a ser serializada.
-     * @param <T> Tipo dos dados.
-     */
+    /** Salva um objeto ou lista no caminho JSON informado usando try-with-resources. */
     public static <T> void salvar(String caminhoArquivo, T dados) {
         if (caminhoArquivo == null || caminhoArquivo.trim().isEmpty()) {
             throw new IllegalArgumentException("O caminho do arquivo JSON é obrigatório.");
         }
-        File arquivo = new File(caminhoArquivo);
-        File diretorioPai = arquivo.getParentFile();
-        if (diretorioPai != null && !diretorioPai.exists()) {
-            diretorioPai.mkdirs();
+        File arq = new File(caminhoArquivo);
+        File pasta = arq.getParentFile();
+        if (pasta != null && !pasta.exists()) {
+            pasta.mkdirs();
         }
 
+        // System.out.println("debug: salvando em " + caminhoArquivo);
         try (BufferedWriter writer = new BufferedWriter(
-                new OutputStreamWriter(new FileOutputStream(arquivo), StandardCharsets.UTF_8))) {
+                new OutputStreamWriter(new FileOutputStream(arq), StandardCharsets.UTF_8))) {
             GSON.toJson(dados, writer);
         } catch (IOException e) {
             System.err.println("[PersistenciaJSON] Erro ao salvar '" + caminhoArquivo + "': " + e.getMessage());
         }
     }
 
-    /**
-     * Carrega um objeto ou coleção de um arquivo JSON utilizando {@code try-with-resources}.
-     *
-     * @param caminhoArquivo Caminho do arquivo JSON.
-     * @param tipo Tipo alvo para desserialização (ex: {@link TypeToken}).
-     * @param <T> Tipo de retorno.
-     * @return O objeto desserializado ou {@code null} se o arquivo não existir ou falhar.
-     */
+    /** Carrega um objeto ou lista de um arquivo JSON usando try-with-resources. */
     public static <T> T carregar(String caminhoArquivo, Type tipo) {
         if (caminhoArquivo == null || caminhoArquivo.trim().isEmpty()) {
             throw new IllegalArgumentException("O caminho do arquivo JSON é obrigatório.");
         }
-        File arquivo = new File(caminhoArquivo);
-        if (!arquivo.exists()) {
+        File arq = new File(caminhoArquivo);
+        if (!arq.exists()) {
             return null;
         }
 
+        T aux = null;
         try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(new FileInputStream(arquivo), StandardCharsets.UTF_8))) {
-            return GSON.fromJson(reader, tipo);
+                new InputStreamReader(new FileInputStream(arq), StandardCharsets.UTF_8))) {
+            aux = GSON.fromJson(reader, tipo);
+            return aux;
         } catch (IOException e) {
-            System.err.println("[PersistenciaJSON] Erro ao carregar '" + caminhoArquivo + "': " + e.getMessage());
+            e.printStackTrace();
             return null;
         }
     }
 
     private static <T> List<T> carregarLista(String caminhoArquivo, Type tipoLista) {
-        List<T> resultado = carregar(caminhoArquivo, tipoLista);
-        return (resultado != null) ? resultado : new ArrayList<>();
+        List<T> temp = carregar(caminhoArquivo, tipoLista);
+        if (temp != null) {
+            return temp;
+        } else {
+            return new ArrayList<>();
+        }
     }
 
-    // =========================================================================
-    // MÉTODOS ESPECÍFICOS POR ENTIDADE
-    // =========================================================================
-
+    /** Salva a lista de clientes em JSON. */
     public static void salvarClientes(List<Client> clientes, String caminhoArquivo) {
         salvar(caminhoArquivo, clientes);
     }
 
+    /** Carrega a lista de clientes de um arquivo JSON. */
     public static List<Client> carregarClientes(String caminhoArquivo) {
         return carregarLista(caminhoArquivo, new TypeToken<List<Client>>() {}.getType());
     }
 
+    /** Salva a lista de agendamentos em JSON. */
     public static void salvarAgendamentos(List<Agendamento> agendamentos, String caminhoArquivo) {
         salvar(caminhoArquivo, agendamentos);
     }
 
+    /** Carrega a lista de agendamentos de um arquivo JSON. */
     public static List<Agendamento> carregarAgendamentos(String caminhoArquivo) {
         return carregarLista(caminhoArquivo, new TypeToken<List<Agendamento>>() {}.getType());
     }
 
-    public static void salvarRegistrosAcesso(List<RegistroAcesso> registros, String caminhoArquivo) {
+    /** Salva os registros de acesso da catraca em JSON. */
+    public static void salvarRegistrosAcesso(List<RegistoAcesso> registros, String caminhoArquivo) {
         salvar(caminhoArquivo, registros);
     }
 
-    public static List<RegistroAcesso> carregarRegistrosAcesso(String caminhoArquivo) {
-        return carregarLista(caminhoArquivo, new TypeToken<List<RegistroAcesso>>() {}.getType());
+    /** Carrega os registros de acesso da catraca de um arquivo JSON. */
+    public static List<RegistoAcesso> carregarRegistrosAcesso(String caminhoArquivo) {
+        return carregarLista(caminhoArquivo, new TypeToken<List<RegistoAcesso>>() {}.getType());
     }
 
+    /** Salva a lista de produtos em JSON. */
     public static void salvarProdutos(List<Produto> produtos, String caminhoArquivo) {
         salvar(caminhoArquivo, produtos);
     }
 
+    /** Carrega a lista de produtos de um arquivo JSON. */
     public static List<Produto> carregarProdutos(String caminhoArquivo) {
         return carregarLista(caminhoArquivo, new TypeToken<List<Produto>>() {}.getType());
     }
 
+    /** Salva o extrato geral em JSON. */
     public static void salvarExtrato(Extrato extrato, String caminhoArquivo) {
         salvar(caminhoArquivo, extrato);
     }
 
+    /** Carrega o extrato geral de um arquivo JSON. */
     public static Extrato carregarExtrato(String caminhoArquivo) {
-        Extrato extrato = carregar(caminhoArquivo, Extrato.class);
-        return (extrato != null) ? extrato : new Extrato();
+        Extrato temp = carregar(caminhoArquivo, Extrato.class);
+        if (temp != null) {
+            return temp;
+        }
+        return new Extrato();
     }
 
+    /** Salva a conta/extrato individual vinculada ao cliente em JSON. */
+    public static void salvarExtratoCliente(Client cliente, Extrato extrato, String caminhoArquivo) {
+        if (cliente == null || extrato == null) {
+            throw new IllegalArgumentException("Cliente e extrato são obrigatórios.");
+        }
+        Map<String, Object> dadosConta = new LinkedHashMap<>();
+        dadosConta.put("clienteId", cliente.getId());
+        dadosConta.put("clienteNome", cliente.getName());
+        dadosConta.put("extratoTexto", extrato.gerarExtratoCliente(cliente));
+        salvar(caminhoArquivo, dadosConta);
+    }
+
+    /** Salva uma lista de relatorios de vendas em JSON. */
     public static void salvarRelatorios(List<String> relatorios, String caminhoArquivo) {
         salvar(caminhoArquivo, relatorios);
     }
 
+    /** Carrega uma lista de relatorios de vendas de um arquivo JSON. */
     public static List<String> carregarRelatorios(String caminhoArquivo) {
         return carregarLista(caminhoArquivo, new TypeToken<List<String>>() {}.getType());
     }
 
+    /** Salva a lista de usuarios (colaboradores e administradores) em JSON. */
     public static void salvarUsuarios(List<Usuario> usuarios, String caminhoArquivo) {
         salvar(caminhoArquivo, usuarios);
     }
 
+    /** Carrega a lista de usuarios de um arquivo JSON. */
     public static List<Usuario> carregarUsuarios(String caminhoArquivo) {
         return carregarLista(caminhoArquivo, new TypeToken<List<Usuario>>() {}.getType());
     }
 
+    /** Salva o estoque da lojinha em JSON. */
     public static void salvarEstoque(Estoque estoque, String caminhoArquivo) {
         salvar(caminhoArquivo, estoque);
     }
 
+    /** Carrega o estoque da lojinha de um arquivo JSON. */
     public static Estoque carregarEstoque(String caminhoArquivo) {
-        Estoque estoque = carregar(caminhoArquivo, Estoque.class);
-        return (estoque != null) ? estoque : new Estoque();
+        Estoque aux = carregar(caminhoArquivo, Estoque.class);
+        if (aux != null) {
+            return aux;
+        }
+        return new Estoque();
     }
 
-    // =========================================================================
-    // ADAPTADORES GSON (DATAS E POLIMORFISMO)
-    // =========================================================================
-
+    // adaptadores pro gson nao quebrar com LocalDate, LocalDateTime, YearMonth e heranca
     private static class LocalDateAdapter implements JsonSerializer<LocalDate>, JsonDeserializer<LocalDate> {
         @Override
         public JsonElement serialize(LocalDate src, Type typeOfSrc, JsonSerializationContext context) {
@@ -269,15 +279,14 @@ public class PersistenciaJSON {
                 throws JsonParseException {
             JsonObject obj = json.getAsJsonObject();
             String tipo = obj.get("tipo").getAsString();
-            switch (tipo) {
-                case "PlanoDiaria":
-                    return new PlanoDiaria();
-                case "PlanoMensal":
-                    return new PlanoMensal();
-                case "PlanoAnual":
-                    return new PlanoAnual();
-                default:
-                    throw new JsonParseException("Tipo de Plano desconhecido: " + tipo);
+            if (tipo.equals("PlanoDiaria")) {
+                return new PlanoDiaria();
+            } else if (tipo.equals("PlanoMensal")) {
+                return new PlanoMensal();
+            } else if (tipo.equals("PlanoAnual")) {
+                return new PlanoAnual();
+            } else {
+                throw new JsonParseException("Tipo de Plano desconhecido: " + tipo);
             }
         }
     }
@@ -336,13 +345,12 @@ public class PersistenciaJSON {
             String login = obj.get("login").getAsString();
             String senha = obj.get("senha").getAsString();
 
-            switch (tipo) {
-                case "Colaborador":
-                    return new Colaborador(nome, login, senha);
-                case "Administrador":
-                    return new Administrador(nome, login, senha);
-                default:
-                    return new Usuario(nome, login, senha);
+            if (tipo.equals("Colaborador")) {
+                return new Colaborador(nome, login, senha);
+            } else if (tipo.equals("Administrador")) {
+                return new Administrador(nome, login, senha);
+            } else {
+                return new Usuario(nome, login, senha);
             }
         }
     }

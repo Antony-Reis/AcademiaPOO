@@ -1,33 +1,25 @@
 package br.com.academiapoo.model;
 
 /**
- * Representa o pagamento vinculado a um agendamento de aula na academia.
- * Responsável pelo registro do cartão de crédito, processamento do débito
- * e cálculo de reembolso em caso de cancelamento.
- *
- * @author Samuel/Antony
- * @version 1.0
+ * Registra o pagamento no cartao e o reembolso de um agendamento.
  */
 public class Pagamento {
 
-    /** Número do cartão de crédito normalizado (apenas dígitos). */
+    /** Numero do cartao (somente digitos). */
     private String numeroCartao;
 
-    /** Valor total cobrado pela aula. */
+    /** Valor cobrado pela aula. */
     private double valorPago;
 
-    /** Valor reembolsado ao cliente em caso de desistência. */
+    /** Valor devolvido em caso de cancelamento. */
+    // nao tem setter porque so e calculado no processarReembolso
     private double valorDevolvido;
 
-    /** Indica se o débito já foi efetivado no cartão. */
+    /** Indica se o pagamento ja foi debitado. */
+    // nao tem setter porque o status so muda quando chama processarPagamento
     private boolean pago;
 
-    /**
-     * Construtor do pagamento com validação de cartão e valor.
-     *
-     * @param numeroCartao Número do cartão de crédito.
-     * @param valorPago Valor a ser cobrado.
-     */
+    /** Construtor do pagamento com cartao e valor. */
     public Pagamento(String numeroCartao, double valorPago) {
         super();
         validarNumeroCartao(numeroCartao);
@@ -39,21 +31,14 @@ public class Pagamento {
         this.pago = false;
     }
 
-    /**
-     * Efetiva a cobrança no cartão de crédito do cliente.
-     */
+    /** Marca o pagamento como realizado no cartao. */
     public void processarPagamento() {
         this.pago = true;
         System.out.printf("[Financeiro] Débito de R$ %.2f realizado no cartão %s.%n",
                 this.valorPago, getNumeroCartaoMascarado());
     }
 
-    /**
-     * Calcula e registra o reembolso de acordo com o percentual informado.
-     *
-     * @param percentual Fração do valor pago a ser devolvida (ex: 0.50 para 50%).
-     * @return O valor em reais devolvido ao cliente.
-     */
+    /** Calcula e registra o valor devolvido conforme o percentual. */
     public double processarReembolso(double percentual) {
         if (!this.pago || percentual <= 0.0) {
             this.valorDevolvido = 0.0;
@@ -63,30 +48,18 @@ public class Pagamento {
         return this.valorDevolvido;
     }
 
-    /**
-     * Retorna o número do cartão armazenado.
-     *
-     * @return O número do cartão.
-     */
+    /** Retorna o numero do cartao. */
     public String getNumeroCartao() {
         return this.numeroCartao;
     }
 
-    /**
-     * Atualiza o número do cartão com validação.
-     *
-     * @param numeroCartao O novo número do cartão.
-     */
+    /** Atualiza o numero do cartao. */
     public void setNumeroCartao(String numeroCartao) {
         validarNumeroCartao(numeroCartao);
         this.numeroCartao = normalizarCartao(numeroCartao);
     }
 
-    /**
-     * Retorna o número do cartão mascarado exibindo apenas os últimos 4 dígitos.
-     *
-     * @return O número do cartão mascarado.
-     */
+    /** Retorna o cartao mascarado exibindo so os 4 ultimos digitos. */
     public String getNumeroCartaoMascarado() {
         if (this.numeroCartao == null || this.numeroCartao.length() < 4) {
             return "•••• •••• •••• ••••";
@@ -94,20 +67,12 @@ public class Pagamento {
         return "•••• •••• •••• " + this.numeroCartao.substring(this.numeroCartao.length() - 4);
     }
 
-    /**
-     * Retorna o valor do pagamento.
-     *
-     * @return O valor pago.
-     */
+    /** Retorna o valor do pagamento. */
     public double getValorPago() {
         return this.valorPago;
     }
 
-    /**
-     * Atualiza o valor do pagamento caso ainda não tenha sido efetivado.
-     *
-     * @param valorPago O novo valor a pagar.
-     */
+    /** Atualiza o valor enquanto ainda nao foi pago. */
     public void setValorPago(double valorPago) {
         if (this.pago) {
             throw new IllegalStateException("Não é possível alterar o valor de um pagamento já efetivado.");
@@ -116,20 +81,12 @@ public class Pagamento {
         this.valorPago = valorPago;
     }
 
-    /**
-     * Retorna o valor devolvido em caso de cancelamento.
-     *
-     * @return O valor reembolsado.
-     */
+    /** Retorna o valor reembolsado. */
     public double getValorDevolvido() {
         return this.valorDevolvido;
     }
 
-    /**
-     * Indica se o pagamento foi efetivado.
-     *
-     * @return {@code true} se pago, {@code false} caso contrário.
-     */
+    /** Retorna true se o pagamento ja foi feito. */
     public boolean isPago() {
         return this.pago;
     }
@@ -154,17 +111,18 @@ public class Pagamento {
         return numeroCartao.replaceAll("\\D", "");
     }
 
-    /**
-     * Retorna uma representação textual dos dados financeiros do pagamento.
-     *
-     * @return String contendo cartão mascarado, status, valor pago e reembolso.
-     */
     @Override
     public String toString() {
+        String statusPago;
+        if (this.pago) {
+            statusPago = "Sim";
+        } else {
+            statusPago = "Não";
+        }
         return String.format(
                 "Pagamento [Cartão: %s | Pago: %s | Valor: R$ %.2f | Devolvido: R$ %.2f]",
                 getNumeroCartaoMascarado(),
-                this.pago ? "Sim" : "Não",
+                statusPago,
                 this.valorPago,
                 this.valorDevolvido
         );

@@ -10,7 +10,7 @@
       "situation": true
     },
     "tipoAcao": "ENTRADA",
-    "dataHora": "2026-11-23T23:19:59.8556452"
+    "dataHora": "2026-11-24T22:34:40.0788124"
   },
   {
     "cliente": {
@@ -23,7 +23,7 @@
       "situation": true
     },
     "tipoAcao": "SAIDA",
-    "dataHora": "2026-11-23T23:19:59.8562981"
+    "dataHora": "2026-11-24T22:34:40.0803213"
   },
   {
     "cliente": {
@@ -36,7 +36,7 @@
       "situation": true
     },
     "tipoAcao": "ENTRADA",
-    "dataHora": "2026-11-23T23:19:59.8562981"
+    "dataHora": "2026-11-24T22:34:40.0823346"
   },
   {
     "cliente": {
@@ -49,7 +49,7 @@
       "situation": true
     },
     "tipoAcao": "SAIDA",
-    "dataHora": "2026-11-23T23:19:59.8562981"
+    "dataHora": "2026-11-24T22:34:40.0823346"
   },
   {
     "cliente": {
@@ -62,7 +62,7 @@
       "situation": true
     },
     "tipoAcao": "ENTRADA",
-    "dataHora": "2026-11-23T23:19:59.8592046"
+    "dataHora": "2026-11-24T22:34:40.0958639"
   },
   {
     "cliente": {
@@ -75,7 +75,7 @@
       "situation": true
     },
     "tipoAcao": "SAIDA",
-    "dataHora": "2026-11-23T23:19:59.8592046"
+    "dataHora": "2026-11-24T22:34:40.0958639"
   },
   {
     "cliente": {
@@ -88,7 +88,7 @@
       "situation": false
     },
     "tipoAcao": "ENTRADA",
-    "dataHora": "2026-11-23T23:19:59.8624206"
+    "dataHora": "2026-11-24T22:34:40.0993834"
   },
   {
     "cliente": {
@@ -101,7 +101,7 @@
       "situation": false
     },
     "tipoAcao": "SAIDA",
-    "dataHora": "2026-11-23T23:19:59.8624206"
+    "dataHora": "2026-11-24T22:34:40.1003847"
   },
   {
     "cliente": {
@@ -114,7 +114,7 @@
       "situation": true
     },
     "tipoAcao": "ENTRADA",
-    "dataHora": "2026-11-23T23:19:59.8634302"
+    "dataHora": "2026-11-24T22:34:40.1013815"
   },
   {
     "cliente": {
@@ -127,6 +127,6 @@
       "situation": true
     },
     "tipoAcao": "SAIDA",
-    "dataHora": "2026-11-23T23:19:59.8634302"
+    "dataHora": "2026-11-24T22:34:40.1013815"
   }
 ]

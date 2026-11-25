@@ -10,74 +10,60 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Responsável pela emissão de extratos e relatórios de vendas (diário e mensal)
- * consolidando receitas de agendamentos/planos e vendas da lojinha de produtos.
- *
- * @author Samuel/Antony
- * @version 1.0
+ * Emite extratos diarios, mensais e a conta individual de cada cliente.
  */
 public class Extrato {
 
-    /** Formatador padrão para exibição de datas. */
     private static final DateTimeFormatter FORMATADOR_DATA = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-    /** Lista de agendamentos considerados no extrato. */
+    /** Lista de agendamentos registrados no extrato. */
+    // nao tem setter pra evitar que a lista inteira seja substituida fora dos metodos
     private List<Agendamento> agendamentos;
 
-    /** Lista de vendas de produtos da loja com suas respectivas datas. */
+    /** Lista de vendas de produtos da loja. */
+    // nao tem setter porque as vendas entram por registrarVendaProduto
     private List<VendaProduto> vendasLoja;
 
-    /**
-     * Registro interno de uma venda de produto com data.
-     */
     private static class VendaProduto {
+        private final Client cliente;
         private final Produto produto;
         private final LocalDate dataVenda;
 
-        private VendaProduto(Produto produto, LocalDate dataVenda) {
+        private VendaProduto(Client cliente, Produto produto, LocalDate dataVenda) {
+            this.cliente = cliente;
             this.produto = produto;
             this.dataVenda = dataVenda;
         }
     }
 
-    /**
-     * Construtor padrão do extrato.
-     */
+    /** Construtor padrao. */
     public Extrato() {
         super();
         this.agendamentos = new ArrayList<>();
         this.vendasLoja = new ArrayList<>();
     }
 
-    /**
-     * Adiciona um agendamento ao extrato.
-     *
-     * @param agendamento O agendamento a registrar.
-     */
+    /** Adiciona um agendamento ao extrato. */
     public void adicionarAgendamento(Agendamento agendamento) {
         if (agendamento != null) {
             this.agendamentos.add(agendamento);
         }
     }
 
-    /**
-     * Registra a venda de um produto na lojinha em uma data específica.
-     *
-     * @param produto O produto vendido.
-     * @param dataVenda A data da venda.
-     */
+    /** Registra venda de produto sem cliente vinculado. */
     public void registrarVendaProduto(Produto produto, LocalDate dataVenda) {
+        registrarVendaProduto(null, produto, dataVenda);
+    }
+
+    /** Registra venda de produto vinculada a um cliente. */
+    public void registrarVendaProduto(Client cliente, Produto produto, LocalDate dataVenda) {
         if (produto == null || dataVenda == null) {
             throw new IllegalArgumentException("Produto e data da venda são obrigatórios.");
         }
-        this.vendasLoja.add(new VendaProduto(produto, dataVenda));
+        this.vendasLoja.add(new VendaProduto(cliente, produto, dataVenda));
     }
 
-    /**
-     * Calcula a receita líquida gerada por agendamentos (valor pago menos eventuais reembolsos).
-     *
-     * @return Total líquido arrecadado em aulas/planos.
-     */
+    /** Soma a receita liquida das aulas pagas. */
     public double calcularReceitaAulas() {
         double total = 0.0;
         for (Agendamento ag : this.agendamentos) {
@@ -88,11 +74,7 @@ public class Extrato {
         return total;
     }
 
-    /**
-     * Calcula a receita total das vendas da lojinha.
-     *
-     * @return Total arrecadado com produtos.
-     */
+    /** Soma a receita das vendas da lojinha. */
     public double calcularReceitaLoja() {
         double total = 0.0;
         for (VendaProduto vp : this.vendasLoja) {
@@ -101,12 +83,7 @@ public class Extrato {
         return total;
     }
 
-    /**
-     * Gera um relatório diário de vendas e agendamentos pagos para a data informada.
-     *
-     * @param dia A data de referência do relatório.
-     * @return Texto formatado com o resumo diário.
-     */
+    /** Gera o relatorio diario de aulas e vendas da loja. */
     public String gerarRelatorioDiario(LocalDate dia) {
         if (dia == null) {
             throw new IllegalArgumentException("A data para o relatório diário é obrigatória.");
@@ -134,12 +111,7 @@ public class Extrato {
         return sb.toString();
     }
 
-    /**
-     * Gera um relatório mensal consolidando aulas e vendas da loja no mês informado.
-     *
-     * @param mes O mês/ano de referência.
-     * @return Texto formatado com o resumo mensal.
-     */
+    /** Gera o relatorio mensal consolidado de aulas e loja. */
     public String gerarRelatorioMensal(YearMonth mes) {
         if (mes == null) {
             throw new IllegalArgumentException("O mês de referência é obrigatório.");
@@ -164,20 +136,46 @@ public class Extrato {
         );
     }
 
-    /**
-     * Retorna a lista imutável de agendamentos do extrato.
-     *
-     * @return Lista de agendamentos.
-     */
+    /** Emite a conta individual (nota fiscal) de um cliente com aulas, reembolsos e compras. */
+    public String gerarExtratoCliente(Client cliente) {
+        if (cliente == null) {
+            throw new IllegalArgumentException("O cliente é obrigatório para emitir a conta.");
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append("=== CONTA / EXTRATO DO CLIENTE: ").append(cliente.getName())
+          .append(" (ID ").append(cliente.getId()).append(") ===\n");
+
+        double totalCliente = 0.0;
+        for (int i = 0; i < this.agendamentos.size(); i++) {
+            Agendamento ag = this.agendamentos.get(i);
+            if (ag.getCliente().getId().equals(cliente.getId())) {
+                double pago = ag.getPagamento().isPago() ? ag.getPagamento().getValorPago() : 0.0;
+                double dev = ag.getPagamento().getValorDevolvido();
+                double liq = pago - dev;
+                totalCliente += liq;
+                sb.append(String.format(" - Aula #%d (%s - %s) | Pago: R$ %.2f | Reembolso: R$ %.2f | Líquido: R$ %.2f%n",
+                        ag.getId(), ag.getModalidade().getNome(), ag.getFase().getDescricao(), pago, dev, liq));
+            }
+        }
+
+        for (int i = 0; i < this.vendasLoja.size(); i++) {
+            VendaProduto vp = this.vendasLoja.get(i);
+            if (vp.cliente != null && vp.cliente.getId().equals(cliente.getId())) {
+                totalCliente += vp.produto.getPreco();
+                sb.append(String.format(" - Produto (%s): %s | Valor: R$ %.2f%n",
+                        vp.dataVenda.format(FORMATADOR_DATA), vp.produto.getNome(), vp.produto.getPreco()));
+            }
+        }
+
+        sb.append(String.format("Total da Conta: R$ %.2f", totalCliente));
+        return sb.toString();
+    }
+
+    /** Retorna a lista de agendamentos (somente leitura). */
     public List<Agendamento> getAgendamentos() {
         return Collections.unmodifiableList(this.agendamentos);
     }
 
-    /**
-     * Retorna uma representação textual resumida do extrato.
-     *
-     * @return String com totais consolidados.
-     */
     @Override
     public String toString() {
         return String.format("Extrato [Aulas: R$ %.2f | Loja: R$ %.2f | Total: R$ %.2f]",
